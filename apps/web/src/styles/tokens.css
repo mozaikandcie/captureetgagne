@@ -1,0 +1,7 @@
+/* Charte Ambyans Twopikal (reprise du prototype) */
+:root {
+  --red: #e33e3d;          /* logo */
+  --yellow: #f8c96a;       /* logo */
+  --red-text: #c9302f;     /* rouge texte sur fond clair (contraste AA) */
+  --tap: 44px;             /* zone tactile minimale */
+}

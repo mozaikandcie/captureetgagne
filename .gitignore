@@ -1,0 +1,12 @@
+node_modules
+dist
+.env
+.env.local
+supabase/.env
+.DS_Store
+.claude
+
+# Hors dépôt (références locales)
+concours-photo.html
+relecture-traductions-creoles.xlsx
+CAPTURE-ET-GAGNE-DEV.md
