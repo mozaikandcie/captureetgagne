@@ -6,6 +6,16 @@ describe('normalizePhone', () => {
     expect(normalizePhone('06 12 34 56 78')).toBe('+33612345678')
     expect(normalizePhone('06.12.34.56.78')).toBe('+33612345678')
   })
+  it('donne l’indicatif d’outre-mer aux mobiles ultramarins', () => {
+    expect(normalizePhone('06 90 12 34 56')).toBe('+590690123456')
+    expect(normalizePhone('0694 12 34 56')).toBe('+594694123456')
+    expect(normalizePhone('06 96 12 34 56')).toBe('+596696123456')
+    expect(normalizePhone('0692123456')).toBe('+262692123456')
+  })
+  it('garde +33 pour les mobiles de métropole', () => {
+    expect(normalizePhone('06 12 34 56 78')).toBe('+33612345678')
+    expect(normalizePhone('07 12 34 56 78')).toBe('+33712345678')
+  })
   it('garde un numéro international', () => {
     expect(normalizePhone('+590 690 12 34 56')).toBe('+590690123456')
     expect(normalizePhone('0033612345678')).toBe('+33612345678')
