@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useI18n } from '../../i18n'
 import { uuid } from '../../lib/uuid'
 import { enqueue } from './queue'
-import { checkVideo, extensionFor, readVideoDuration, resizePhoto } from './media'
+import { checkVideo, extensionFor, readMp4Duration, readVideoDuration, resizePhoto } from './media'
 
 type Kind = 'photo' | 'video' | 'both'
 const ACCEPT: Record<Kind, string> = { photo: 'image/*', video: 'video/*', both: 'image/*,video/*' }
@@ -32,7 +32,9 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
       const isVideo = file.type.startsWith('video/')
       let blob: Blob = file
       if (isVideo) {
-        const duration = await readVideoDuration(file).catch(() => NaN)
+        // 1) le navigateur ; 2) à défaut, l'en-tête MP4/MOV (codec non décodable sur ce téléphone)
+        let duration = await readVideoDuration(file).catch(() => NaN)
+        if (!Number.isFinite(duration) || duration <= 0) duration = await readMp4Duration(file).catch(() => NaN)
         const problem = checkVideo(duration, file.size)
         if (problem) {
           // Le détail aide à comprendre un refus inattendu (format, taille, durée illisible).
