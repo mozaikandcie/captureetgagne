@@ -171,3 +171,26 @@ Ne planifie la purge qu'après avoir lu le résultat de l'essai à blanc. Elle e
 | Envoi de vidéo refusé par le serveur | Fichier au-dessus de la limite du plan (50 Mo en Free) : voir étape 1.3. |
 | Le jury voit « réservé au jury » | Pas de ligne `staff` pour ce compte et cet événement (étape 6). |
 | Export ZIP en erreur | Logs de `export-zip` ; la fonction n'a pas encore été testée en conditions réelles. |
+
+---
+
+## Annexe · Essais sans SMS (numéros de test)
+
+À utiliser tant que Brevo n'est pas branché (étapes 3 et 5 repoussées). Supabase accepte une liste de numéros de test avec un code fixe : aucun SMS n'est envoyé, aucun crédit n'est consommé.
+
+1. Dashboard > Authentication > Sign In / Providers > **Phone** : active le fournisseur.
+   Si le formulaire exige un fournisseur SMS, choisis Twilio et remplis des valeurs bidon : elles ne servent jamais pour les numéros de test.
+2. Dans le champ **Test Phone Numbers and OTPs**, saisis (sans « + », séparés par des virgules) :
+   `33600000001=123456,33600000002=123456,33600000003=123456,33600000011=123456,33600000012=123456`
+3. Dans l'app, tape ces numéros au format national : `06 00 00 00 01` devient `+33600000001`, que Supabase reconnaît. Le code est toujours `123456`.
+
+| Numéro à taper | Rôle suggéré |
+| --- | --- |
+| 06 00 00 00 01 | organisateur |
+| 06 00 00 00 02 | juré 1 |
+| 06 00 00 00 03 | juré 2 |
+| 06 00 00 00 11 et 12 | participants |
+
+Une fois ces comptes connectés une fois (sur `/jury/<id>` pour le jury), rattache-les à `staff` avec la requête de l'étape 6 : `where phone = '33600000001'`.
+
+**Avant le vrai événement** : vide le champ « Test Phone Numbers and OTPs » et supprime les comptes de test (Authentication > Users). Sinon n'importe qui connaissant un de ces numéros et le code `123456` entrerait avec ce compte, jury compris.
