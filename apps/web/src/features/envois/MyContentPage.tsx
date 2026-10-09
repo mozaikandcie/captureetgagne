@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { localized, useMe } from '../../lib/me'
@@ -43,7 +43,8 @@ export default function MyContentPage() {
   }
 
   if (loading || entries.isLoading) return <main className="page"><p role="status">{t('loading')}</p></main>
-  if (!me) return <main className="page"><p role="alert">{t('eventNotFound')}</p></main>
+  // Pas connecté ou pas inscrit : retour à la page d'inscription, qui gère les deux cas.
+  if (!me) return <Navigate to={`/e/${eventId}`} replace />
 
   return (
     <main className="page">
