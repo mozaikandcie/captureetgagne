@@ -31,3 +31,10 @@ input[type='text'], input[type='tel'], select {
 .help { font-size: 0.9rem; opacity: 0.85; }
 .err { color: var(--red-text); font-weight: 600; }
 :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+
+.ob { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.6); z-index: 10; }
+.ob-card { width: 100%; max-width: 420px; padding: 24px; text-align: center; background: var(--bg); border-radius: 16px; }
+.ob-emoji { font-size: 3.5rem; }
+.ob-dots { display: flex; justify-content: center; gap: 8px; margin: 16px 0; }
+.ob-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.ob-dots i.on { background: var(--red); }

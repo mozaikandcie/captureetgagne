@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import { useSession } from '../../lib/session'
 import { LANGS, useI18n, type Lang } from '../../i18n'
 import { normalizePhone } from './phone'
+import Onboarding, { hasSeenOnboarding } from './Onboarding'
 
 type Step = 'phone' | 'code'
 
@@ -63,7 +64,7 @@ export default function JoinPage() {
       {!session ? (
         <PhoneForm />
       ) : me.data ? (
-        <p role="status">{me.data.display_name}</p>
+        <Welcome name={me.data.display_name} />
       ) : (
         <ProfileForm eventId={event.data.id} userId={session.user.id} />
       )}
@@ -178,5 +179,15 @@ function ProfileForm({ eventId, userId }: { eventId: string; userId: string }) {
       {error && <p role="alert" className="err">{error}</p>}
       <button type="submit" className="btn" disabled={busy}>{t('go')}</button>
     </form>
+  )
+}
+
+function Welcome({ name }: { name: string }) {
+  const [open, setOpen] = useState(() => !hasSeenOnboarding())
+  return (
+    <>
+      <p role="status">{name}</p>
+      {open && <Onboarding onClose={() => setOpen(false)} />}
+    </>
   )
 }
