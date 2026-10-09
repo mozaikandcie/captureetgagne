@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useSession } from '../../lib/session'
@@ -64,7 +64,7 @@ export default function JoinPage() {
       {!session ? (
         <PhoneForm />
       ) : me.data ? (
-        <Welcome name={me.data.display_name} />
+        <Welcome name={me.data.display_name} eventId={event.data.id} />
       ) : (
         <ProfileForm eventId={event.data.id} userId={session.user.id} />
       )}
@@ -182,11 +182,13 @@ function ProfileForm({ eventId, userId }: { eventId: string; userId: string }) {
   )
 }
 
-function Welcome({ name }: { name: string }) {
+function Welcome({ name, eventId }: { name: string; eventId: string }) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(() => !hasSeenOnboarding())
   return (
     <>
-      <p role="status">{name}</p>
+      <p role="status">{t('hello', { n: name })}</p>
+      <Link className="btn" to={`/e/${eventId}/defis`}>{t('go')}</Link>
       {open && <Onboarding onClose={() => setOpen(false)} />}
     </>
   )

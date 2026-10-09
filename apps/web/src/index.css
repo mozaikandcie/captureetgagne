@@ -38,3 +38,11 @@ input[type='text'], input[type='tel'], select {
 .ob-dots { display: flex; justify-content: center; gap: 8px; margin: 16px 0; }
 .ob-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
 .ob-dots i.on { background: var(--red); }
+
+.cards { list-style: none; padding: 0; display: grid; gap: 16px; }
+.card { padding: 16px; border: 2px solid var(--border); border-radius: 14px; }
+.card h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.card img, .card video { width: 100%; border-radius: 10px; }
+progress { width: 100%; accent-color: var(--red); }
+a { color: var(--red-text); }
+a.btn { display: grid; place-items: center; text-decoration: none; color: #1d1a17; }
