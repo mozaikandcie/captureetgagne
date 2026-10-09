@@ -64,6 +64,20 @@ function update(id: string, patch: Partial<QueueItem>) {
   if (item && patch.progress === undefined) void putItem(item)
 }
 
+/** Échec réseau (aucune réponse du serveur) : l'envoi doit attendre le retour du réseau, pas échouer. */
+export class NetworkError extends Error {}
+
+export function isNetworkError(e: unknown): boolean {
+  if (e instanceof NetworkError) return true
+  // Erreur TUS : la requête est partie mais aucune réponse n'est revenue (coupure, 4G perdue, délai).
+  return typeof e === 'object' && e !== null && 'originalRequest' in e && !(e as { originalResponse?: unknown }).originalResponse
+}
+
+/** `fetch` de supabase-js échoue sans code d'erreur de base quand le réseau tombe. */
+export function isNetworkMessage(error: { message: string; code?: string }): boolean {
+  return !error.code && /fetch|network|load failed/i.test(error.message)
+}
+
 /** Résumé court d'une erreur d'envoi : statut HTTP et corps de la réponse pour TUS, message sinon. */
 function describe(e: unknown): string {
   const tusError = e as { originalResponse?: { getStatus(): number; getBody(): string } | null; message?: string }
@@ -74,6 +88,16 @@ function describe(e: unknown): string {
 
 // ---- envoi ----
 let running = false
+let retryTimer: ReturnType<typeof setTimeout> | undefined
+
+/** Nouvelle tentative différée : couvre le cas « le navigateur se croit en ligne mais le réseau est mort ». */
+function scheduleRetry(delayMs = 15000) {
+  if (retryTimer) return
+  retryTimer = setTimeout(() => {
+    retryTimer = undefined
+    void run()
+  }, delayMs)
+}
 
 async function uploadBlob(item: QueueItem): Promise<void> {
   const { data } = await supabase.auth.getSession()
@@ -121,6 +145,7 @@ async function process(item: QueueItem): Promise<void> {
       kind: item.kind,
       storage_path: item.path,
     })
+    if (error && isNetworkMessage(error)) throw new NetworkError(error.message) // fichier conservé côté serveur
     if (error) {
       // Refus par le serveur (2 envois max, concours terminé) : le fichier orphelin est supprimé.
       await supabase.storage.from('media').remove([item.path])
@@ -131,21 +156,37 @@ async function process(item: QueueItem): Promise<void> {
     emit()
     window.dispatchEvent(new Event('cg-entry-sent'))
   } catch (e) {
+    if (isNetworkError(e)) {
+      // Pas de réseau : on reste dans la file, visible « en attente de réseau », et on réessaie seul.
+      update(item.id, { status: 'queued', error: undefined, detail: undefined, progress: 0 })
+      scheduleRetry()
+      return
+    }
     console.error('Envoi échoué', e)
     const key = e instanceof Error && ['limitReached', 'closed', 'authRequired'].includes(e.message) ? e.message : 'uploadFailed'
     update(item.id, { status: 'error', error: key, detail: describe(e) })
   }
 }
 
-/** Traite les éléments en attente, un par un. Sans effet si une exécution est déjà en cours. */
+/**
+ * Traite les éléments en attente, un par un. Sans effet si une exécution est déjà en cours.
+ * Tant qu'un élément attend le réseau, une nouvelle tentative est programmée : on ne dépend pas
+ * du seul événement « online », qui peut arriver avant que le navigateur se juge de nouveau connecté.
+ */
 export async function run(): Promise<void> {
-  if (running || !navigator.onLine) return
+  if (running) return
+  const waiting = () => items.some((i) => i.status === 'queued')
+  if (!navigator.onLine) {
+    if (waiting()) scheduleRetry(5000)
+    return
+  }
   running = true
   try {
     for (const item of items.filter((i) => i.status !== 'error')) await process(item)
   } finally {
     running = false
   }
+  if (waiting()) scheduleRetry()
 }
 
 export async function enqueue(item: Omit<QueueItem, 'status' | 'progress'>): Promise<void> {
