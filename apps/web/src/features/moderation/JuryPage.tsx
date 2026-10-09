@@ -8,6 +8,7 @@ import { useI18n } from '../../i18n'
 import PhoneForm from '../inscription/PhoneForm'
 import { MediaView, useModerationData, type Challenge, type Row } from './data'
 import NotesTab from '../notation/NotesTab'
+import ToolsTab from '../outils/ToolsTab'
 import RankingTab from '../classement/RankingTab'
 import {
   applyFilters, favoriteCount, noFilters, pendingQueue,
@@ -15,8 +16,8 @@ import {
 } from './entries'
 
 
-type Tab = 'queue' | 'grid' | 'notes' | 'ranking'
-const TABS: [Tab, string][] = [['queue', 'tabQueue'], ['grid', 'tabGrid'], ['notes', 'tabNotes'], ['ranking', 'tabRanking']]
+type Tab = 'queue' | 'grid' | 'notes' | 'ranking' | 'tools'
+const TABS: [Tab, string][] = [['queue', 'tabQueue'], ['grid', 'tabGrid'], ['notes', 'tabNotes'], ['ranking', 'tabRanking'], ['tools', 'tabTools']]
 
 /** Espace jury : /jury/:eventId. Accès réservé aux comptes présents dans `staff`. */
 export default function JuryPage() {
@@ -58,6 +59,7 @@ export default function JuryPage() {
         ))}
       </div>
       {tab === 'notes' ? <NotesTab eventId={eventId!} userId={session.user.id} />
+        : tab === 'tools' ? <ToolsTab eventId={eventId!} isOrganizer={staff.data.role === 'organizer'} />
         : tab === 'ranking' ? <RankingTab eventId={eventId!} isOrganizer={staff.data.role === 'organizer'} />
         : <Moderation eventId={eventId!} tab={tab} />}
     </main>
