@@ -1,9 +1,11 @@
-// Règles d'envoi (CLAUDE.md, section 6) : photos 2048 px max en JPEG 0,85 ; vidéos 30 s et 200 Mo max.
+// Règles d'envoi (CLAUDE.md, section 6) : photos 2048 px max en JPEG 0,85 ; vidéos 30 s et 50 Mo max (plafond du plan Free de Supabase ;
+// repasser à 200 Mo avec le plan Pro, en même temps que la limite du bucket `media`).
 
 export const PHOTO_MAX_SIDE = 2048
 export const PHOTO_QUALITY = 0.85
 export const VIDEO_MAX_SECONDS = 30
-export const VIDEO_MAX_BYTES = 200 * 1024 * 1024
+export const VIDEO_MAX_MB = 50
+export const VIDEO_MAX_BYTES = VIDEO_MAX_MB * 1024 * 1024
 
 /** Dimensions après réduction : le plus grand côté ne dépasse pas `max`, jamais d'agrandissement. */
 export function fitWithin(width: number, height: number, max = PHOTO_MAX_SIDE): { width: number; height: number } {

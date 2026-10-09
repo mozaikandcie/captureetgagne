@@ -105,7 +105,7 @@
   "retry": "Réessayer",
   "dismiss": "Abandonner",
   "videoTooLong": "Cette vidéo dépasse 30 secondes.",
-  "videoTooBig": "Cette vidéo dépasse 200 Mo.",
+  "videoTooBig": "Cette vidéo dépasse 50 Mo.",
   "videoUnreadable": "Impossible de lire cette vidéo.",
   "photoUnreadable": "Impossible de lire cette photo.",
   "uploadFailed": "L’envoi a échoué. Réessaie.",

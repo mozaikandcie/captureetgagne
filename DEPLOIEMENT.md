@@ -11,11 +11,11 @@ Prérequis : Node 22, le dépôt cloné, et la CLI Supabase (`brew install supab
 
 1. Sur supabase.com, ouvre le projet existant (référence `jylepdgarlmoolwjvthh`, voir `.mcp.json`) ou crée-en un.
 2. **Vérifie la région** : Project Settings > General > Region doit être `eu-west-*` ou `eu-central-*` (obligation RGPD du cahier des charges). Elle ne se change pas après coup : si ce n'est pas l'UE, crée un autre projet.
-3. **Plan** : le plan Free limite chaque fichier à **50 Mo**. Pour les vidéos jusqu'à 200 Mo, il faut le plan Pro. Sinon, ramène `VIDEO_MAX_BYTES` à 50 Mo dans `apps/web/src/features/envois/media.ts` et le message correspondant, avant le test réel.
+3. **Plan** : le projet est en **Free**, qui limite chaque fichier à **50 Mo**. Le code est réglé sur 50 Mo (`VIDEO_MAX_MB` dans `apps/web/src/features/envois/media.ts`, plus la limite du bucket dans la migration). Une vidéo de 30 s en 4K peut dépasser 50 Mo : à vérifier au test réel. Avec le plan Pro, remonte à 200 Mo à ces deux endroits et dans Settings > Storage.
 4. Note ces valeurs (Project Settings > API) :
    - `Project URL` → `VITE_SUPABASE_URL`
-   - `anon public` → `VITE_SUPABASE_ANON_KEY`
-   - `service_role` → `SUPABASE_SERVICE_ROLE_KEY` (secret, jamais dans le navigateur ni dans Git)
+   - clé **publique** (`anon`, ou `sb_publishable_…` sur les projets récents) → `VITE_SUPABASE_ANON_KEY`
+   - clé **secrète** (`service_role`, ou `sb_secret_…`) → `SUPABASE_SERVICE_ROLE_KEY` : jamais dans le navigateur, jamais dans Git, jamais dans un fichier `VITE_*`
 
 **Contrôle** : la région affichée est bien en Europe.
 

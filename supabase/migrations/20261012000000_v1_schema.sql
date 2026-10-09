@@ -260,7 +260,7 @@ alter publication supabase_realtime add table entries, notifications;
 
 -- ---------- Storage : bucket privé `media`, chemin event_id/participant_id/entry_id.ext ----------
 insert into storage.buckets (id, name, public, file_size_limit)
-values ('media', 'media', false, 209715200)       -- 200 Mo ; le plan Free plafonne à 50 Mo
+values ('media', 'media', false, 52428800)        -- 50 Mo (plan Free) ; avec le plan Pro : 209715200 (200 Mo)
 on conflict (id) do nothing;
 
 create policy media_upload on storage.objects for insert to authenticated
