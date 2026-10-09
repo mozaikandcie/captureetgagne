@@ -5,7 +5,16 @@ import { supabase } from '../../lib/supabase'
 import { localized, useMe } from '../../lib/me'
 import { useI18n } from '../../i18n'
 
-interface Payload { key: string; challengeId?: string; reason?: string | null }
+interface Payload {
+  key: string
+  challengeId?: string
+  reason?: string | null
+  comment?: string
+  rank?: number
+  total?: number
+  score?: number
+  provisional?: boolean
+}
 
 /** Notifications du participant, affichées dans sa langue à partir de la clé + variables stockées. */
 export default function NotificationsPage() {
@@ -15,7 +24,7 @@ export default function NotificationsPage() {
   const qc = useQueryClient()
 
   const challenges = useQuery({
-    queryKey: ['challenges', eventId],
+    queryKey: ['challenge-titles', eventId],
     queryFn: async () => {
       const { data, error } = await supabase.from('challenges').select('id, title').eq('event_id', eventId!)
       if (error) throw error
@@ -58,7 +67,8 @@ export default function NotificationsPage() {
 
   const text = (p: Payload) => {
     const challenge = localized(challenges.data?.find((c) => c.id === p.challengeId)?.title, lang)
-    return t(p.key, { challenge })
+    return t(p.key, { challenge, rank: p.rank ?? 0, total: p.total ?? 0, score: p.score ?? 0 }) +
+      (p.provisional ? ' ' + t('nRangProv') : '')
   }
   const hasUnread = notifs.data?.some((n) => !n.read_at)
 
@@ -75,6 +85,7 @@ export default function NotificationsPage() {
             <li key={n.id} className="card">
               <p>{!n.read_at && <strong>● <span className="sr">{t('unread')} </span></strong>}{text(p)}</p>
               {p.reason && <p className="help">{t('nReason', { reason: p.reason })}</p>}
+              {p.comment && <p className="help">{t('nComText', { comment: p.comment })}</p>}
             </li>
           )
         })}

@@ -6,26 +6,24 @@ import { useSession } from '../../lib/session'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
 import PhoneForm from '../inscription/PhoneForm'
+import { MediaView, useModerationData, type Challenge, type Row } from './data'
+import NotesTab from '../notation/NotesTab'
+import RankingTab from '../classement/RankingTab'
 import {
   applyFilters, favoriteCount, noFilters, pendingQueue,
-  type Filters, type Kind, type ModEntry, type Status,
+  type Filters, type Status,
 } from './entries'
 
-type Json = Record<string, string> | null
-interface Row extends ModEntry {
-  participantName: string
-  rejectReason: string | null
-  storagePath: string
-  url: string | null
-}
-interface Challenge { id: string; title: Json }
+
+type Tab = 'queue' | 'grid' | 'notes' | 'ranking'
+const TABS: [Tab, string][] = [['queue', 'tabQueue'], ['grid', 'tabGrid'], ['notes', 'tabNotes'], ['ranking', 'tabRanking']]
 
 /** Espace jury : /jury/:eventId. Accès réservé aux comptes présents dans `staff`. */
 export default function JuryPage() {
   const { eventId } = useParams<{ eventId: string }>()
   const { t } = useI18n()
   const session = useSession()
-  const [tab, setTab] = useState<'queue' | 'grid'>('queue')
+  const [tab, setTab] = useState<Tab>('queue')
 
   const staff = useQuery({
     queryKey: ['staff', eventId, session?.user.id],
@@ -52,68 +50,18 @@ export default function JuryPage() {
     <main className="page wide">
       <h1>{t('juryTitle')} · {staff.data.label}</h1>
       <div role="tablist" className="tabs">
-        {(['queue', 'grid'] as const).map((id) => (
+        {TABS.map(([id, label]) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id}
             className={tab === id ? 'tab on' : 'tab'} onClick={() => setTab(id)}>
-            {t(id === 'queue' ? 'tabQueue' : 'tabGrid')}
+            {t(label)}
           </button>
         ))}
       </div>
-      <Moderation eventId={eventId!} tab={tab} />
+      {tab === 'notes' ? <NotesTab eventId={eventId!} userId={session.user.id} />
+        : tab === 'ranking' ? <RankingTab eventId={eventId!} isOrganizer={staff.data.role === 'organizer'} />
+        : <Moderation eventId={eventId!} tab={tab} />}
     </main>
   )
-}
-
-function useModerationData(eventId: string) {
-  const qc = useQueryClient()
-
-  const challenges = useQuery({
-    queryKey: ['challenges', eventId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('challenges').select('id, title').eq('event_id', eventId).order('position')
-      if (error) throw error
-      return data as Challenge[]
-    },
-  })
-
-  const entries = useQuery({
-    queryKey: ['mod-entries', eventId],
-    queryFn: async (): Promise<Row[]> => {
-      const { data, error } = await supabase
-        .from('entries')
-        .select('id, challenge_id, kind, status, favorite, created_at, reject_reason, storage_path, participants(display_name)')
-        .eq('event_id', eventId)
-        .order('created_at')
-      if (error) throw error
-      const signed = await supabase.storage.from('media').createSignedUrls(data.map((e) => e.storage_path), 3600)
-      const urls = new Map(signed.data?.map((u) => [u.path, u.signedUrl]))
-      return data.map((e) => ({
-        id: e.id,
-        challengeId: e.challenge_id,
-        kind: e.kind as Kind,
-        status: e.status as Status,
-        favorite: e.favorite,
-        createdAt: e.created_at,
-        rejectReason: e.reject_reason,
-        storagePath: e.storage_path,
-        participantName: (e.participants as unknown as { display_name: string } | null)?.display_name ?? '',
-        url: urls.get(e.storage_path) ?? null,
-      }))
-    },
-  })
-
-  // Temps réel : un nouvel envoi ou un changement de statut rafraîchit la liste.
-  useEffect(() => {
-    const channel = supabase
-      .channel(`mod-${eventId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'entries', filter: `event_id=eq.${eventId}` },
-        () => void qc.invalidateQueries({ queryKey: ['mod-entries', eventId] }))
-      .subscribe()
-    return () => void supabase.removeChannel(channel)
-  }, [eventId, qc])
-
-  return { challenges: challenges.data ?? [], entries: entries.data ?? [], loading: entries.isLoading || challenges.isLoading }
 }
 
 function Moderation({ eventId, tab }: { eventId: string; tab: 'queue' | 'grid' }) {
@@ -148,13 +96,6 @@ function Moderation({ eventId, tab }: { eventId: string; tab: 'queue' | 'grid' }
 }
 
 type Patch = (id: string, v: Partial<{ status: Status; reject_reason: string | null; favorite: boolean }>) => Promise<boolean>
-
-function MediaView({ row, title }: { row: Row; title: string }) {
-  if (!row.url) return null
-  return row.kind === 'photo'
-    ? <img src={row.url} alt={title} />
-    : <video src={row.url} controls playsInline preload="metadata" />
-}
 
 /** File « à la chaîne » : un seul contenu à l'écran, le suivant apparaît dès la décision. */
 function Queue({ entries, title, onPatch }: { entries: Row[]; title: (id: string) => string; onPatch: Patch }) {
