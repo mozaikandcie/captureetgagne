@@ -107,3 +107,5 @@ input[type='range'] { width: 100%; min-height: var(--tap); accent-color: var(--r
 .foot { display: flex; justify-content: center; gap: 24px; padding: 24px 16px; }
 .foot a { display: inline-flex; align-items: center; min-height: var(--tap); }
 .rules { white-space: pre-line; }
+
+.detail { display: block; word-break: break-word; opacity: 0.8; }

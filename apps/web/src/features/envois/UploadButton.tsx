@@ -50,6 +50,7 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
         blob,
       })
     } catch (e) {
+      console.error('Préparation du fichier échouée', e)
       setError(t(e instanceof Error && e.message === 'photoUnreadable' ? 'photoUnreadable' : 'uploadFailed'))
     } finally {
       setBusy(false)

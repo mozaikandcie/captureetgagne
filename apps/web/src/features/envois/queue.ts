@@ -17,6 +17,7 @@ export interface QueueItem {
   status: QueueStatus
   progress: number // 0..1
   error?: string // clé de traduction
+  detail?: string // détail technique (statut HTTP, message), pour comprendre un échec
 }
 
 const DB_NAME = 'cg-queue'
@@ -61,6 +62,14 @@ function update(id: string, patch: Partial<QueueItem>) {
   const item = items.find((i) => i.id === id)
   // La progression n'est pas persistée à chaque octet.
   if (item && patch.progress === undefined) void putItem(item)
+}
+
+/** Résumé court d'une erreur d'envoi : statut HTTP et corps de la réponse pour TUS, message sinon. */
+function describe(e: unknown): string {
+  const tusError = e as { originalResponse?: { getStatus(): number; getBody(): string } | null; message?: string }
+  const res = tusError.originalResponse
+  if (res) return `HTTP ${res.getStatus()} ${res.getBody().slice(0, 160)}`
+  return (e instanceof Error ? e.message : String(e)).slice(0, 200)
 }
 
 // ---- envoi ----
@@ -122,8 +131,9 @@ async function process(item: QueueItem): Promise<void> {
     emit()
     window.dispatchEvent(new Event('cg-entry-sent'))
   } catch (e) {
+    console.error('Envoi échoué', e)
     const key = e instanceof Error && ['limitReached', 'closed', 'authRequired'].includes(e.message) ? e.message : 'uploadFailed'
-    update(item.id, { status: 'error', error: key })
+    update(item.id, { status: 'error', error: key, detail: describe(e) })
   }
 }
 

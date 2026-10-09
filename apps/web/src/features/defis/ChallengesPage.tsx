@@ -86,6 +86,7 @@ export default function ChallengesPage() {
                   {q.status === 'error' ? (
                     <>
                       <span className="err">{t(q.error ?? 'uploadFailed')}</span>{' '}
+                      {q.detail && <small className="detail">{q.detail}</small>}{' '}
                       <button type="button" className="link" onClick={() => retry(q.id)}>{t('retry')}</button>
                       <button type="button" className="link" onClick={() => void discard(q.id)}>{t('dismiss')}</button>
                     </>
