@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useI18n } from '../../i18n'
+import { uuid } from '../../lib/uuid'
 import { enqueue } from './queue'
 import { checkVideo, extensionFor, readVideoDuration, resizePhoto } from './media'
 
@@ -37,7 +38,7 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
         })
       }
       const mediaKind = isVideo ? 'video' : 'photo'
-      const id = crypto.randomUUID()
+      const id = uuid()
       await enqueue({
         id,
         eventId,
