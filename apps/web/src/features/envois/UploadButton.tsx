@@ -21,17 +21,25 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
   const input = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [detail, setDetail] = useState<string | null>(null)
 
   async function onFile(file: File | undefined) {
     if (!file) return
     setError(null)
+    setDetail(null)
     setBusy(true)
     try {
       const isVideo = file.type.startsWith('video/')
       let blob: Blob = file
       if (isVideo) {
-        const problem = checkVideo(await readVideoDuration(file).catch(() => NaN), file.size)
-        if (problem) return setError(t(problem))
+        const duration = await readVideoDuration(file).catch(() => NaN)
+        const problem = checkVideo(duration, file.size)
+        if (problem) {
+          // Le détail aide à comprendre un refus inattendu (format, taille, durée illisible).
+          const mb = (file.size / 1024 / 1024).toFixed(1)
+          setDetail(`${file.type || '?'} · ${mb} Mo · ${Number.isFinite(duration) ? duration.toFixed(1) + ' s' : 'durée illisible'}`)
+          return setError(t(problem))
+        }
       } else {
         blob = await resizePhoto(file).catch(() => {
           throw new Error('photoUnreadable')
@@ -65,7 +73,7 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
       <button type="button" className="btn" disabled={disabled || busy} onClick={() => input.current?.click()}>
         {busy ? t('preparing') : disabled ? t('full') : t('send')}
       </button>
-      {error && <p role="alert" className="err">{error}</p>}
+      {error && <p role="alert" className="err">{error}{detail && <small className="detail">{detail}</small>}</p>}
     </div>
   )
 }

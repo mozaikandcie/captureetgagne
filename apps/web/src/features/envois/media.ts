@@ -23,21 +23,26 @@ export function checkVideo(durationSeconds: number, sizeBytes: number): VideoErr
   return null
 }
 
-export function readVideoDuration(file: File): Promise<number> {
+/** Lit la durée via <video>. Rejette après `timeoutMs` : sur certains téléphones, les métadonnées n'arrivent jamais. */
+export function readVideoDuration(file: File, timeoutMs = 10000): Promise<number> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)
     const video = document.createElement('video')
-    const done = () => URL.revokeObjectURL(url)
+    const finish = (fn: () => void) => {
+      clearTimeout(timer)
+      video.removeAttribute('src')
+      video.load() // libère le fichier
+      URL.revokeObjectURL(url)
+      fn()
+    }
+    const timer = setTimeout(() => finish(() => reject(new Error('timeout'))), timeoutMs)
     video.preload = 'metadata'
-    video.onloadedmetadata = () => {
-      done()
-      resolve(video.duration)
-    }
-    video.onerror = () => {
-      done()
-      reject(new Error('video'))
-    }
+    video.muted = true
+    video.setAttribute('playsinline', '')
+    video.onloadedmetadata = () => finish(() => resolve(video.duration))
+    video.onerror = () => finish(() => reject(new Error('video')))
     video.src = url
+    video.load() // iOS Safari ignore `preload` tant que load() n'est pas appelé
   })
 }
 
