@@ -12,6 +12,7 @@ export function useMe(eventId: string | undefined) {
         .from('participants')
         .select('id, display_name')
         .eq('event_id', eventId!)
+        .eq('user_id', session!.user.id)
         .maybeSingle()
       if (error) throw error
       return data

@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nProvider } from './i18n'
 import JoinPage from './features/inscription/JoinPage'
 import ChallengesPage from './features/defis/ChallengesPage'
+import JuryPage from './features/moderation/JuryPage'
+import NotificationsPage from './features/notifications/NotificationsPage'
 import MyContentPage from './features/envois/MyContentPage'
 
 const queryClient = new QueryClient()
@@ -16,6 +18,8 @@ export default function App() {
             <Route path="/e/:eventId" element={<JoinPage />} />
             <Route path="/e/:eventId/defis" element={<ChallengesPage />} />
             <Route path="/e/:eventId/contenus" element={<MyContentPage />} />
+            <Route path="/e/:eventId/notifications" element={<NotificationsPage />} />
+            <Route path="/jury/:eventId" element={<JuryPage />} />
             <Route path="*" element={<main className="page"><h1>Capture et Gagne</h1></main>} />
           </Routes>
         </BrowserRouter>

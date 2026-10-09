@@ -60,7 +60,7 @@ export default function ChallengesPage() {
     <main className="page">
       <h1>{t('defisTitle')}</h1>
       <p className="help">{t('defisNote')}</p>
-      <p><Link to={`/e/${eventId}/contenus`}>{t('mine')}</Link></p>
+      <p><Link to={`/e/${eventId}/contenus`}>{t('mine')}</Link> · <Link to={`/e/${eventId}/notifications`}>{t('notifs')}</Link></p>
       <ul className="cards">
         {challenges.data?.map((c) => {
           const sent = (mine.data ?? []).filter((e) => e.challenge_id === c.id && e.status !== 'rejected').length
