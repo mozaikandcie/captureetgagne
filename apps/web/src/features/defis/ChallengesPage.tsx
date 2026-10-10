@@ -59,6 +59,7 @@ export default function ChallengesPage() {
                 <div className="body">
                   <h3>{localized(c.title as Json, lang)}</h3>
                   <p>{localized(c.hint as Json, lang)} · {typeLabel[c.kind as keyof typeof typeLabel]}</p>
+                  <p className="help">{t('sentCount', { n: sent })}</p>
                   {(tip || culture || c.example_path) && (
                     <details className="tip">
                       <summary>💡 {culture ? t('tipsCult') : t('tips')}</summary>

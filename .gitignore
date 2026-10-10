@@ -10,3 +10,8 @@ supabase/.env
 concours-photo.html
 relecture-traductions-creoles.xlsx
 CAPTURE-ET-GAGNE-DEV.md
+
+# Sessions de test (jetons de comptes de test)
+apps/web/e2e/.auth
+apps/web/test-results
+apps/web/playwright-report

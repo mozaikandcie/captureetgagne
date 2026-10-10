@@ -211,7 +211,7 @@ score /100   = 30 × participation + 70 × jury / 10   (arrondi à 2 décimales)
 - Fonctionne sur un iPhone et un Android réels, en 4G dégradée.
 - Textes dans les 6 langues, aucune chaîne en dur dans le code.
 - Règles RLS testées (un participant ne lit jamais les envois non validés d'un autre).
-- Tests Vitest pour la logique, au moins un parcours Playwright par écran principal.
+- Tests Vitest pour la logique, au moins un parcours Playwright par écran principal. Les règles d'accès (RLS) sont vérifiées avec des comptes de rôles différents (`npm run test:rls`) et les parcours critiques en bout en bout (`npm run test:e2e`) : voir `apps/web/README.md`.
 - Aucune erreur dans la console, contrastes vérifiés.
 
 ## 9. Variables d'environnement
