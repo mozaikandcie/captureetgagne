@@ -511,5 +511,8 @@
   "traySent": "Envoyé. Votre contenu attend la validation du jury.",
   "trayStalled": "Connexion instable.",
   "trayStalledHelp": "L’envoi reprend tout seul dès que le réseau le permet. Rien n’est perdu.",
-  "fEventPrizeEx": "ex. 50 € ou 1er prix : 2 places de concert"
+  "fEventPrizeEx": "ex. 50 € ou 1er prix : 2 places de concert",
+  "qrLocalTitle": "Ce lien ne marchera pas sur les téléphones des invités.",
+  "qrLocalHelp": "C’est une adresse de test (localhost ou réseau local). Collez ci-dessus l’adresse publique de l’application (celle de Vercel), ou ouvrez cet espace depuis cette adresse, avant d’imprimer l’affichette.",
+  "qrReset": "Remettre l’adresse par défaut"
 }

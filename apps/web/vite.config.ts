@@ -2,8 +2,13 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Adresse publique (QR codes, liens à partager) : VITE_PUBLIC_URL, sinon le domaine de production fourni par Vercel au build.
+const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL
+const publicUrl = process.env.VITE_PUBLIC_URL ?? (vercelDomain ? `https://${vercelDomain}` : '')
+
 // https://vite.dev/config/
 export default defineConfig({
+  define: { __PUBLIC_URL__: JSON.stringify(publicUrl) },
   plugins: [
     react(),
     VitePWA({

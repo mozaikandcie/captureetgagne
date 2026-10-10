@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useI18n } from '../../i18n'
+import { eventLink, isLocalAddress } from '../../lib/publicUrl'
 import { buildQrPoster } from './poster'
 import { useQr } from './useQr'
 
@@ -20,10 +21,14 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
   const { t, lang } = useI18n()
   const qc = useQueryClient()
   const navigate = useNavigate()
-  const [link, setLink] = useState(`${location.origin}/e/${eventId}`)
+  // Lien du QR code : l'adresse publique de l'application (jamais « localhost »), modifiable et mémorisé pour cet événement.
+  const storageKey = `cg-qr-link-${eventId}`
+  const [link, setLinkState] = useState(() => { try { return localStorage.getItem(storageKey) ?? eventLink(eventId) } catch { return eventLink(eventId) } })
+  const setLink = (v: string) => { setLinkState(v); try { localStorage.setItem(storageKey, v) } catch { /* ignoré */ } }
   const [busy, setBusy] = useState(false)
   const [askArchive, setAskArchive] = useState(false)
-  const qr = useQr(link || `${location.origin}/e/${eventId}`, 640)
+  const qr = useQr(link || eventLink(eventId), 640)
+  const local = isLocalAddress(link)
 
   const info = useQuery({
     queryKey: ['tools-info', eventId],
@@ -138,6 +143,8 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
         <h2>{t('qrTitle')}</h2>
         <p className="help">{t('qrHelp')}</p>
         <label className="f"><span>{t('qrLinkLabel')}</span><input type="text" value={link} onChange={(e) => setLink(e.target.value.trim())} /></label>
+        {local && <p role="alert" className="notice"><b>{t('qrLocalTitle')}</b> {t('qrLocalHelp')}</p>}
+        <div className="row"><button type="button" className="btn small ghost" onClick={() => setLink(eventLink(eventId))}>{t('qrReset')}</button></div>
         <div className="qrcard">
           {qr && <img className="qrbox" src={qr} alt={t('wallScan')} />}
           <div className="qrtxt"><span className="lab">{t('wallScan')}</span><b>{d?.event.name}</b><span>Capture et Gagne · Ambyans Twopikal</span></div>

@@ -6,6 +6,7 @@ import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
 import StaffGuard, { spacePath } from '../moderation/StaffGuard'
 import { useModerationData } from '../moderation/data'
+import { eventLink } from '../../lib/publicUrl'
 import { useQr } from '../outils/useQr'
 
 const SLIDE_MS = 6000
@@ -20,7 +21,7 @@ function Wall({ eventId, home }: { eventId: string; home: string }) {
   const { t, lang } = useI18n()
   const { challenges, entries, loading } = useModerationData(eventId)
   const [index, setIndex] = useState(0)
-  const qr = useQr(`${location.origin}/e/${eventId}`, 300)
+  const qr = useQr((() => { try { return localStorage.getItem(`cg-qr-link-${eventId}`) } catch { return null } })() || eventLink(eventId), 300)
 
   const info = useQuery({
     queryKey: ['wall-info', eventId],

@@ -130,7 +130,8 @@ Parcours à essayer, sur ton téléphone si possible (même réseau Wi-Fi, adres
 3. Variables d'environnement : `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` uniquement. Jamais la clé `service_role`.
 4. `apps/web/vercel.json` renvoie toutes les adresses vers `index.html` (nécessaire pour `/e/…` et `/jury/…`).
 5. **Plan** : le plan Hobby est réservé à un usage non commercial. Vérifie qu'il convient à l'association, sinon plan Pro ou Cloudflare Pages.
-6. Domaine : ajoute celui de l'association si elle en a un. Le QR code utilise l'adresse du site ouvert, donc ouvre l'onglet Outils depuis l'adresse définitive avant d'imprimer l'affichette.
+6. Domaine : ajoute celui de l'association si elle en a un.
+7. **QR code** : il pointe vers l'**adresse publique** de l'application, et non vers l'adresse où l'organisateur ouvre son espace (un QR généré depuis `localhost` mène nulle part sur un téléphone). Cette adresse vient de la variable `VITE_PUBLIC_URL` si elle existe, sinon du domaine de production que Vercel fournit au moment du build. Si l'écran « Outils » affiche l'avertissement « Ce lien ne marchera pas sur les téléphones des invités », ajoute `VITE_PUBLIC_URL` (par exemple `https://capture.ambyans.fr`) dans les variables Vercel, puis redéploie. Dans tous les cas, **scanne le QR avec un téléphone avant d'imprimer l'affichette**.
 
 **Contrôle** : l'adresse de production affiche l'inscription, et un rechargement de `/e/<id>` ne donne pas d'erreur 404.
 
