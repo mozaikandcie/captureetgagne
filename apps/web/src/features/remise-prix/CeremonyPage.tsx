@@ -146,7 +146,7 @@ function Show({ eventId, data }: { eventId: string; data: NonNullable<ReturnType
     if (s.type === 'end') return (
       <>
         <p className="cer-big">{t('cerThanks')}</p>
-        <p className="cer-sub">{t('wallStats', { p: data.participants.length, n: data.entries.filter((e) => e.status === 'ok').length })}</p>
+        <p className="cer-sub">{t('wallParticipants', { n: data.participants.length })} · {t('wallContents', { n: data.entries.filter((e) => e.status === 'ok').length })}</p>
         <p className="cer-sub">{t('cerSee')}</p>
       </>
     )
@@ -162,7 +162,7 @@ function Show({ eventId, data }: { eventId: string; data: NonNullable<ReturnType
     const who = s.type === 'prize' ? name(s.entry.participantId) : name(s.row.participantId)
     const detail = s.type === 'prize'
       ? t('cerNoteOf', { n: s.note.toFixed(1).replace('.', ',') })
-      : t('cerPoints', { s: s.row.score.toFixed(2).replace('.', ','), d: s.row.done })
+      : `${t('cerScore', { s: s.row.score.toFixed(2).replace('.', ',') })} · ${t('cerDone', { n: s.row.done })}`
     return (
       <>
         <p className="cer-lab">{label}</p>

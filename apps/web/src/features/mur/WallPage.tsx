@@ -66,7 +66,7 @@ function Wall({ eventId }: { eventId: string }) {
         <h1>{info.data?.name}</h1>
         {qr && <img className="w-qr" src={qr} alt={t('wallScan')} />}
         <p>{t('wallScan')}</p>
-        <p className="help">{t('wallStats', { p: info.data?.participants ?? 0, n: ok.length })}</p>
+        <p className="help">{t('wallParticipants', { n: info.data?.participants ?? 0 })} · {t('wallContents', { n: ok.length })}</p>
         <Link to={`/jury/${eventId}`} className="link">{t('close')}</Link>
       </aside>
     </div>

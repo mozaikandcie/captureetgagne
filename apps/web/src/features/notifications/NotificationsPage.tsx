@@ -68,7 +68,9 @@ export default function NotificationsPage() {
 
   const text = (p: Payload) => {
     const challenge = localized(challenges.data?.find((c) => c.id === p.challengeId)?.title, lang)
-    return t(p.key, { challenge, rank: p.rank ?? 0, total: p.total ?? 0, score: p.score ?? 0 }) +
+    // Le rang commande le singulier de « 1re ».
+    const rank = p.rank ?? 0
+    return t(p.key, { challenge, rank, total: p.total ?? 0, score: p.score ?? 0, ...(p.key === 'nRang' ? { count: rank } : {}) }) +
       (p.provisional ? ' ' + t('nRangProv') : '')
   }
   const hasUnread = notifs.data?.some((n) => !n.read_at)

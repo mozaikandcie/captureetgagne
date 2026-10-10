@@ -155,7 +155,11 @@ Ne planifie la purge qu'après avoir lu le résultat de l'essai à blanc. Elle e
 - [ ] SMS reçus aux Antilles et en métropole (essai avec de vrais numéros).
 - [ ] Un iPhone et un Android réels, en 4G dégradée : inscription, envoi photo, envoi vidéo, reprise après coupure.
 - [ ] Remplace le seed par le vrai événement (statut `live`, `ends_at` renseignée, règlement relu).
-- [ ] Les textes des créoles relus par des locuteurs natifs (voir `relecture-traductions-creoles.xlsx`), puis intégrés dans `apps/web/src/i18n/*.json`. Les textes ajoutés après le prototype n'existent qu'en français.
+- [ ] Les textes des créoles relus par des locuteurs natifs :
+  1. Envoyer `relecture-traductions-creoles.xlsx` (84 phrases par langue, celles du prototype). À ce jour, 0 phrase relue.
+  2. Les relecteurs remplissent « Votre correction » (ou « Validé ? » = Oui).
+  3. Réimporter : `python3 scripts/relecture-creoles.py importer relecture-traductions-creoles.xlsx` (simulation), puis `--appliquer`.
+  4. Les textes ajoutés depuis le prototype (environ 160, tous en français seulement) sont listés par `python3 scripts/relecture-creoles.py a-traduire > a-traduire.csv`, à faire traduire à part et à ajouter dans les fichiers `i18n/*.json`. D'ici là, l'app affiche ces textes en français.
 - [ ] Page « Données personnelles » relue par le bureau (durées, contact de l'association à ajouter).
 - [ ] Règle pour les mineurs visibles sur les photos : décision du bureau.
 - [ ] Export ZIP essayé avec un volume réel de médias (la fonction n'a jamais tourné).

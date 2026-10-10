@@ -31,9 +31,24 @@ function initialLang(): Lang {
   return 'fr'
 }
 
-/** Traduit une clé ; repli sur le français, puis sur la clé elle-même. `{var}` est remplacé. */
+/**
+ * Cherche une clé dans une langue. Si `count` vaut 0 ou 1 et que la langue définit `<clé>_one`, c'est cette
+ * variante (singulier) qui sert. Une langue sans variante utilise sa traduction de base.
+ */
+function lookup(lang: Lang, key: string, count: number | undefined): string | undefined {
+  const d = dictionaries[lang]
+  if (count !== undefined && count < 2 && d[`${key}_one`] !== undefined) return d[`${key}_one`]
+  return d[key]
+}
+
+/**
+ * Traduit une clé ; repli sur le français, puis sur la clé elle-même. `{var}` est remplacé.
+ * Le nombre qui commande le singulier/pluriel est `vars.count`, à défaut `vars.n`.
+ */
 export function translate(lang: Lang, key: string, vars?: Record<string, string | number>): string {
-  const text = dictionaries[lang][key] ?? dictionaries.fr[key] ?? key
+  const raw = vars?.count ?? vars?.n
+  const count = raw === undefined ? undefined : Number(raw)
+  const text = lookup(lang, key, count) ?? lookup('fr', key, count) ?? key
   return vars ? text.replace(/\{(\w+)\}/g, (_, v) => String(vars[v] ?? `{${v}}`)) : text
 }
 
