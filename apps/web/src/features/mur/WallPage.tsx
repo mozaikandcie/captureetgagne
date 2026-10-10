@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
-import StaffGuard from '../moderation/StaffGuard'
+import StaffGuard, { spacePath } from '../moderation/StaffGuard'
 import { useModerationData } from '../moderation/data'
 import { useQr } from '../outils/useQr'
 
@@ -13,10 +13,10 @@ const SLIDE_MS = 6000
 /** Mur en direct : /jury/:eventId/mur. Les contenus validés défilent, coups de cœur en premier. */
 export default function WallPage() {
   const { eventId } = useParams<{ eventId: string }>()
-  return <StaffGuard eventId={eventId!}>{() => <Wall eventId={eventId!} />}</StaffGuard>
+  return <StaffGuard eventId={eventId!}>{(staff) => <Wall eventId={eventId!} home={spacePath(staff.role, eventId!)} />}</StaffGuard>
 }
 
-function Wall({ eventId }: { eventId: string }) {
+function Wall({ eventId, home }: { eventId: string; home: string }) {
   const { t, lang } = useI18n()
   const { challenges, entries, loading } = useModerationData(eventId)
   const [index, setIndex] = useState(0)
@@ -67,7 +67,7 @@ function Wall({ eventId }: { eventId: string }) {
         {qr && <img className="w-qr" src={qr} alt={t('wallScan')} />}
         <p>{t('wallScan')}</p>
         <p className="help">{t('wallParticipants', { n: info.data?.participants ?? 0 })} · {t('wallContents', { n: ok.length })}</p>
-        <Link to={`/jury/${eventId}`} className="link">{t('close')}</Link>
+        <Link to={home} className="link">{t('close')}</Link>
       </aside>
     </div>
   )

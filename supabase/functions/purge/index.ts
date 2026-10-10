@@ -46,7 +46,8 @@ Deno.serve(async (req) => {
   const mediaCutoff = monthsAgo(MEDIA_MONTHS)
   for (const e of events.filter((e) => dateOf(e) < mediaCutoff)) {
     const { data: entries } = await admin.from('entries').select('storage_path').eq('event_id', e.id)
-    const paths = (entries ?? []).map((x) => x.storage_path as string)
+    const { data: avatars } = await admin.from('participants').select('avatar_path').eq('event_id', e.id).not('avatar_path', 'is', null)
+    const paths = [...(entries ?? []).map((x) => x.storage_path as string), ...(avatars ?? []).map((x) => x.avatar_path as string)]
     if (!dry) {
       for (let i = 0; i < paths.length; i += 100) {
         const { error } = await admin.storage.from('media').remove(paths.slice(i, i + 100))

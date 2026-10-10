@@ -3,6 +3,7 @@ import { Link, useOutletContext } from 'react-router-dom'
 import { useI18n } from '../../i18n'
 import InstallBox from '../../components/InstallBox'
 import Onboarding from '../inscription/Onboarding'
+import AvatarEditor from './AvatarEditor'
 import BadgesBox from './BadgesBox'
 import MineBox from './MineBox'
 import MyBox from './MyBox'
@@ -17,6 +18,7 @@ export default function MePage() {
   return (
     <>
       <MyBox ctx={ctx} />
+      <section className="box"><AvatarEditor ctx={ctx} /></section>
       <BadgesBox participantId={ctx.me.id} />
       <MineBox ctx={ctx} />
       <InstallBox />
@@ -24,7 +26,9 @@ export default function MePage() {
       <p className="orglink">
         <button type="button" className="link" onClick={() => setIntro(true)}>{t('obAgain')}</button>
         {' · '}
-        <Link to={`/jury/${ctx.event.id}`}>{t('orgLink')}</Link>
+        <Link to={`/jury/${ctx.event.id}`}>{t('juryLink')}</Link>
+        {' · '}
+        <Link to={`/organisation/${ctx.event.id}`}>{t('orgLink')}</Link>
       </p>
       {intro && <Onboarding onClose={() => setIntro(false)} />}
     </>

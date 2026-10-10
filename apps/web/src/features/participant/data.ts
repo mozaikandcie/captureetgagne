@@ -16,7 +16,7 @@ export interface EventInfo {
 
 export interface ParticipantCtx {
   event: EventInfo
-  me: { id: string; display_name: string }
+  me: { id: string; display_name: string; avatar_path: string | null }
   /** L'écran d'ouverture est terminé : les écrans de bienvenue peuvent s'afficher. */
   splashDone: boolean
 }

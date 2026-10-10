@@ -12,7 +12,8 @@ import DataPage from './features/legal/DataPage'
 import RulesPage from './features/legal/RulesPage'
 
 // Écrans réservés à l'organisation : chargés à la demande pour alléger le parcours des participants.
-const JuryPage = lazy(() => import('./features/moderation/JuryPage'))
+const JurySpace = lazy(() => import('./features/jury/JurySpace'))
+const OrgSpace = lazy(() => import('./features/jury/OrgSpace'))
 const WallPage = lazy(() => import('./features/mur/WallPage'))
 const CeremonyPage = lazy(() => import('./features/remise-prix/CeremonyPage'))
 
@@ -41,13 +42,15 @@ export default function App() {
                   <Route path="notifications" element={<ToMe />} />
                   <Route path="reglement" element={<RulesPage />} />
                 </Route>
-                <Route path="/jury/:eventId" element={<JuryPage />} />
+                <Route path="/jury/:eventId" element={<JurySpace />} />
+                <Route path="/organisation/:eventId" element={<OrgSpace />} />
                 <Route path="/donnees-personnelles" element={<DataPage />} />
                 <Route path="*" element={<main className="page"><h1>Capture et Gagne</h1></main>} />
               </Route>
               {/* Écrans projetés : plein écran, sans cadre ni pied de page */}
               <Route path="/jury/:eventId/mur" element={<WallPage />} />
-              <Route path="/jury/:eventId/remise" element={<CeremonyPage />} />
+              <Route path="/organisation/:eventId/mur" element={<WallPage />} />
+              <Route path="/organisation/:eventId/remise" element={<CeremonyPage />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

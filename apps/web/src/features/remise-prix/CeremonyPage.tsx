@@ -9,10 +9,10 @@ import StaffGuard from '../moderation/StaffGuard'
 import { buildSteps, type CeremonyEntry, type Step } from './steps'
 import { confetti } from './confetti'
 
-/** Remise des prix : /jury/:eventId/remise. Bloquée tant que le classement est provisoire, sauf « lancer quand même ». */
+/** Remise des prix : /organisation/:eventId/remise. Bloquée tant que le classement est provisoire, sauf « lancer quand même ». */
 export default function CeremonyPage() {
   const { eventId } = useParams<{ eventId: string }>()
-  return <StaffGuard eventId={eventId!}>{() => <Ceremony eventId={eventId!} />}</StaffGuard>
+  return <StaffGuard eventId={eventId!} allow="organizer">{() => <Ceremony eventId={eventId!} />}</StaffGuard>
 }
 
 type Json = Record<string, string> | null
@@ -78,7 +78,7 @@ function Ceremony({ eventId }: { eventId: string }) {
         <h1>{t('cerTitle')}</h1>
         <p role="alert" className="err">{t('cerBlocked')}</p>
         <button type="button" className="btn" onClick={() => setForced(true)}>{t('cerForce')}</button>
-        <p><Link to={`/jury/${eventId}`}>{t('back')}</Link></p>
+        <p><Link to={`/organisation/${eventId}`}>{t('back')}</Link></p>
       </main>
     )
   }
@@ -122,7 +122,7 @@ function Show({ eventId, data }: { eventId: string; data: NonNullable<ReturnType
         <button type="button" className="btn ghost" disabled={i === 0} onClick={() => setI(i - 1)}>{t('cerPrev')}</button>
         <span>{t('cerOf', { i: i + 1, n: steps.length })}</span>
         {last
-          ? <Link className="btn" to={`/jury/${eventId}`}>{t('cerFinish')}</Link>
+          ? <Link className="btn" to={`/organisation/${eventId}`}>{t('cerFinish')}</Link>
           : <button type="button" className="btn" onClick={() => setI(i + 1)}>{t('cerNext')}</button>}
       </nav>
     </div>

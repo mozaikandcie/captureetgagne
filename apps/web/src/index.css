@@ -70,11 +70,11 @@ img, video { max-width: 100%; }
 .link { min-height: var(--tap); padding: 0; background: none; border: 0; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
 .f { display: grid; gap: 4px; margin: 0; }
 .f > span { font-weight: 600; font-size: 0.9rem; color: var(--muted); }
-input[type='text'], input[type='tel'], select:not(.langsel) {
+input[type='text'], input[type='tel'], input[type='number'], input[type='datetime-local'], select:not(.langsel) {
   width: 100%; min-height: var(--tap); padding: 8px 12px; font: inherit; color: var(--fg);
   background: var(--bg); border: 2px solid var(--line); border-radius: 12px;
 }
-input[type='text']:focus, input[type='tel']:focus, select:focus { border-color: var(--yellow); outline: none; }
+input[type='text']:focus, input[type='tel']:focus, input[type='number']:focus, select:focus { border-color: var(--yellow); outline: none; }
 .check { display: flex; gap: 12px; align-items: flex-start; min-height: var(--tap); }
 .check input { width: 24px; height: 24px; flex: none; margin-top: 2px; accent-color: var(--accent); }
 input[type='range'] { width: 100%; min-height: var(--tap); accent-color: var(--accent); }
@@ -384,3 +384,7 @@ section > img, section > video { width: 100%; max-height: 70vh; object-fit: cont
 
 /* ---------- Hors connexion ---------- */
 .offline { position: sticky; top: 0; z-index: 45; padding: 8px 16px; padding-top: calc(8px + env(safe-area-inset-top, 0px)); font-size: 0.9rem; font-weight: 600; text-align: center; color: #2a1714; background: var(--yellow); }
+
+/* ---------- Photo de profil / initiales ---------- */
+.avatar { flex: none; display: inline-grid; place-items: center; object-fit: cover; border-radius: 50%; font-family: var(--display); font-weight: 800; color: #fff; box-shadow: 0 0 0 3px var(--yellow); }
+.avatar-edit { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }

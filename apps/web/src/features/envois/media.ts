@@ -111,6 +111,17 @@ export async function resizePhoto(file: File): Promise<Blob> {
   )
 }
 
+/** Photo de profil : carré centré de `size` px (JPEG), pour un fichier léger et un cadrage régulier. */
+export async function cropSquare(file: File, size = 256): Promise<Blob> {
+  const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' })
+  const side = Math.min(bitmap.width, bitmap.height)
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = size
+  canvas.getContext('2d')!.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, size, size)
+  bitmap.close()
+  return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('photo'))), 'image/jpeg', PHOTO_QUALITY))
+}
+
 export function extensionFor(kind: 'photo' | 'video', file: Blob): string {
   if (kind === 'photo') return 'jpg'
   return file.type === 'video/quicktime' ? 'mov' : file.type === 'video/webm' ? 'webm' : 'mp4'

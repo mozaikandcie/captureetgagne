@@ -10,7 +10,7 @@ export function useMe(eventId: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('participants')
-        .select('id, display_name')
+        .select('id, display_name, avatar_path')
         .eq('event_id', eventId!)
         .eq('user_id', session!.user.id)
         .maybeSingle()

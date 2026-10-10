@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useI18n } from '../../i18n'
 import { encouragement, type RankLine } from './encouragement'
 import { progress, useChallenges, useMyEntries, useUnreadCount, type ParticipantCtx } from './data'
+import Avatar from '../../components/Avatar'
 import NotifPanel from './NotifPanel'
 
 /** Carte « Bonjour {prénom} ! » : progression, notifications, message d'encouragement, changement de participant. */
@@ -38,6 +39,7 @@ export default function MyBox({ ctx, withBar = false }: { ctx: ParticipantCtx; w
   return (
     <section className="box">
       <div className="row">
+        <Avatar name={me.display_name} path={me.avatar_path} size={56} />
         <div className="grow">
           <h2>{t('hello', { n: me.display_name.split(' ')[0] })}</h2>
           <p className="help">{t('count', { d: sent.size, n: total })}</p>

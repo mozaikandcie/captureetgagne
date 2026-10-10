@@ -25,7 +25,9 @@ export default function Landing({ event, userId, splashDone }: { event: EventInf
       <p className="orglink">
         <button type="button" className="link" onClick={() => setIntro(true)}>{t('obAgain')}</button>
         {' · '}
-        <Link to={`/jury/${event.id}`}>{t('orgLink')}</Link>
+        <Link to={`/jury/${event.id}`}>{t('juryLink')}</Link>
+        {' · '}
+        <Link to={`/organisation/${event.id}`}>{t('orgLink')}</Link>
       </p>
       {intro && <Onboarding onClose={() => setIntro(false)} />}
     </>

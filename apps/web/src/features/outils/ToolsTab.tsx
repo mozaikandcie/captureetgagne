@@ -113,7 +113,7 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
     const next = await supabase.rpc('create_next_event', { p_from: eventId, p_name: '' })
     await qc.invalidateQueries()
     toast(t('archived'))
-    if (next.data) navigate(`/jury/${next.data as string}`)
+    if (next.data) navigate(`/organisation/${next.data as string}`)
   }
 
   const d = info.data
@@ -122,7 +122,7 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
       <div className="box">
         <h2>{t('wallTitle')}</h2>
         <p className="help">{t('wallNote')}</p>
-        <div className="row"><Link className="btn small" to={`/jury/${eventId}/mur`}>{t('launchWall')}</Link>
+        <div className="row"><Link className="btn small" to={`/organisation/${eventId}/mur`}>{t('launchWall')}</Link>
           <span className="help">{d ? t('wallInfo', { n: d.photos + d.videos }) : ''}</span></div>
       </div>
 
@@ -130,7 +130,7 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
         <div className="box">
           <h2>{t('cerTitle')}</h2>
           <p className="help">{t('cerNote')}</p>
-          <div className="row"><Link className="btn small" to={`/jury/${eventId}/remise`}>{t('launchCeremony')}</Link></div>
+          <div className="row"><Link className="btn small" to={`/organisation/${eventId}/remise`}>{t('launchCeremony')}</Link></div>
         </div>
       )}
 

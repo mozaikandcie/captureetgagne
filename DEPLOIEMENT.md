@@ -82,20 +82,27 @@ Puis Authentication > Hooks > **Send SMS** : type HTTPS, URL `https://jylepdgarl
 
 ## 6. Comptes jury et organisation
 
-Chacun se connecte une première fois avec son téléphone sur `/jury/<id-événement>` (la page répond « réservé au jury », c'est normal). Cela crée son compte. Ensuite, dans SQL Editor :
+Deux espaces distincts, chacun avec sa propre adresse :
+
+| Espace | Adresse | Pour qui |
+| --- | --- | --- |
+| Jury | `/jury/<id-événement>` | les jurés : modérer, noter, classement, mur |
+| Organisation | `/organisation/<id-événement>` | l'organisateur : annonce, défis, jury, contenus, classement, outils, remise des prix, archivage |
+
+Quelqu'un qui ouvre l'espace de l'autre est renvoyé vers le sien. Une personne sans rôle (un participant, par exemple) voit un message de refus avec un bouton « Retour à ma page ».
+
+**Premier organisateur** (une seule fois, dans SQL Editor) : se connecter d'abord avec son téléphone sur `/organisation/<id>` (la page répond « réservé »), puis :
 
 ```sql
 -- Le numéro est stocké sans « + » : 33612345678, 590690123456…
 insert into staff (event_id, user_id, role, label)
 select '11111111-1111-1111-1111-111111111111', id, 'organizer', 'Président'
 from auth.users where phone = '33612345678';
-
--- Jurés : même requête avec role = 'juror' et un label (« Présidente », « Trésorier »…)
 ```
 
-L'identifiant `1111…` est celui de l'événement du seed. Pour un vrai événement, crée-le dans Table Editor (`events`, statut `live`) et ses défis dans `challenges`, en reprenant le format de `seed.sql` (textes en JSON `{"fr": "…"}`).
+**Les jurés** n'ont plus besoin de SQL : dans l'espace organisation, onglet **Jury**, l'organisateur choisit puis valide le nombre de jurés, et invite chacun avec son numéro. Le juré ouvre `/jury/<id>`, se connecte avec ce numéro et il est rattaché automatiquement. Tant que le nombre n'est pas atteint, les classements restent « provisoires » (chaque contenu doit être noté par tous les jurés).
 
-**Contrôle** : `/jury/<id>` affiche les onglets À modérer, Grille, Notes, Classement, Outils.
+**Contrôle** : `/organisation/<id>` affiche Événement, Jury, Contenus, Classement, Outils ; `/jury/<id>` affiche Modération et notes, Classement.
 
 ## 7. Lancer l'app en local
 
@@ -190,8 +197,8 @@ Ne planifie la purge qu'après avoir lu le résultat de l'essai à blanc. Elle e
 
 | Numéro à taper | Rôle suggéré |
 | --- | --- |
-| 06 00 00 00 01 | organisateur |
-| 06 00 00 00 02 | juré 1 |
+| 06 00 00 00 01 | organisateur (`/organisation/<id>`) |
+| 06 00 00 00 02 | juré 1 (`/jury/<id>`) |
 | 06 00 00 00 03 | juré 2 |
 | 06 00 00 00 11 et 12 | participants |
 
