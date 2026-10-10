@@ -90,7 +90,7 @@
   "codeLabel": "Code reçu par SMS",
   "codeSent": "Code envoyé au {phone}",
   "verify": "Valider",
-  "wrongCode": "Code incorrect ou expiré. Réessaie.",
+  "wrongCode": "Code incorrect ou expiré. Vérifiez-le ou demandez un nouveau code.",
   "changeNumber": "Changer de numéro",
   "badPhone": "Numéro invalide. Exemple : 06 12 34 56 78",
   "netError": "Problème de connexion. Réessaie dans un instant.",
@@ -488,5 +488,14 @@
   "avatarChange": "Changer ma photo",
   "avatarRemove": "Retirer ma photo",
   "avatarInitials": "Facultatif : sans photo, votre badge affiche vos initiales.",
-  "avatarOptional": "Votre photo (facultatif)"
+  "avatarOptional": "Votre photo (facultatif)",
+  "smsRateLimit": "Trop de demandes. Patientez {n} s avant de redemander un code.",
+  "smsSendFailed": "Le SMS n’a pas pu être envoyé. Réessayez dans un instant.",
+  "smsNoNetwork": "Pas de réseau. Vérifiez votre connexion puis réessayez.",
+  "smsUnknown": "Une erreur est survenue. Réessayez, ou demandez de l’aide à l’association.",
+  "smsResend": "Renvoyer le code",
+  "smsResendIn": "Renvoyer le code dans {n} s",
+  "smsResent": "Nouveau code envoyé.",
+  "smsHelpTitle": "Le code n’arrive pas ?",
+  "smsHelp": "Vérifiez le numéro, patientez une minute puis renvoyez le code. Si cela ne marche toujours pas, demandez à un membre de l’association : il vous aidera sur place."
 }
