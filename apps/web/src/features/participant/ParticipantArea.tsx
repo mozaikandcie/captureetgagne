@@ -44,7 +44,7 @@ export default function ParticipantArea() {
       <main className="page">
         {splash}
         <Header />
-        {viewingRules ? <Outlet /> : <Landing event={event.data} userId={session?.user.id} splashDone={splashDone} />}
+        {viewingRules ? <Outlet /> : <Landing event={event.data} userId={session?.user.id} />}
       </main>
     )
   }
