@@ -69,10 +69,10 @@ export default function UploadButton({ eventId, participantId, challengeId, kind
   }
 
   return (
-    <div>
+    <div className="upwrap">
       <input ref={input} type="file" accept={ACCEPT[kind]} hidden
         onChange={(e) => void onFile(e.target.files?.[0])} />
-      <button type="button" className="btn" disabled={disabled || busy} onClick={() => input.current?.click()}>
+      <button type="button" className={disabled ? 'up off' : 'up'} disabled={disabled || busy} onClick={() => input.current?.click()}>
         {busy ? t('preparing') : disabled ? t('full') : t('send')}
       </button>
       {error && <p role="alert" className="err">{error}{detail && <small className="detail">{detail}</small>}</p>}

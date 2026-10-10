@@ -7,11 +7,16 @@ export interface EventInfo {
   status: string
   ends_at: string | null
   message: string | null
+  date_label: string | null
+  place: string | null
+  prizes: string | null
 }
 
 export interface ParticipantCtx {
   event: EventInfo
   me: { id: string; display_name: string }
+  /** L'écran d'ouverture est terminé : les écrans de bienvenue peuvent s'afficher. */
+  splashDone: boolean
 }
 
 /** Défis de l'événement (texte complet : titre, consigne, conseils, culture). */
@@ -27,14 +32,70 @@ export function useChallenges(eventId: string) {
   })
 }
 
-/** Envois du participant (id, défi, statut). */
+export interface MyEntry {
+  id: string
+  challenge_id: string
+  kind: 'photo' | 'video'
+  status: 'pending' | 'ok' | 'rejected'
+  favorite: boolean
+  reject_reason: string | null
+  created_at: string
+  url: string | null
+  /** Moyenne des notes des jurés (/10), `null` tant que personne n'a noté. */
+  note: number | null
+  comments: string[]
+}
+
+/** Envois du participant, avec adresse signée du fichier, note du jury et commentaires. */
 export function useMyEntries(participantId: string) {
   return useQuery({
     queryKey: ['my-entries', participantId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('entries').select('id, challenge_id, status').eq('participant_id', participantId)
+    queryFn: async (): Promise<MyEntry[]> => {
+      const { data, error } = await supabase
+        .from('entries')
+        .select('id, challenge_id, kind, status, favorite, reject_reason, created_at, storage_path, scores(respect, quality, originality, comment)')
+        .eq('participant_id', participantId)
+        .order('created_at', { ascending: false })
       if (error) throw error
+      const signed = await supabase.storage.from('media').createSignedUrls(data.map((e) => e.storage_path), 3600)
+      const urls = new Map(signed.data?.map((u) => [u.path, u.signedUrl]))
+      return data.map((e) => {
+        const scores = (e.scores ?? []) as { respect: number; quality: number; originality: number; comment: string | null }[]
+        const note = scores.length
+          ? scores.reduce((sum, s) => sum + (s.respect + s.quality + s.originality) / 3, 0) / scores.length
+          : null
+        return {
+          id: e.id,
+          challenge_id: e.challenge_id,
+          kind: e.kind as MyEntry['kind'],
+          status: e.status as MyEntry['status'],
+          favorite: e.favorite,
+          reject_reason: e.reject_reason,
+          created_at: e.created_at,
+          url: urls.get(e.storage_path) ?? null,
+          note,
+          comments: scores.map((s) => s.comment).filter((c): c is string => !!c),
+        }
+      })
+    },
+  })
+}
+
+/** Contenus validés de l'événement (galerie, coups de cœur), coups de cœur en premier. */
+export function useGallery(eventId: string) {
+  return useQuery({
+    queryKey: ['gallery', eventId],
+    refetchInterval: 30000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('entries').select('id, challenge_id, kind, favorite, storage_path, validated_at')
+        .eq('event_id', eventId).eq('status', 'ok')
+      if (error) throw error
+      const signed = await supabase.storage.from('media').createSignedUrls(data.map((e) => e.storage_path), 3600)
+      const urls = new Map(signed.data?.map((u) => [u.path, u.signedUrl]))
       return data
+        .map((e) => ({ ...e, url: urls.get(e.storage_path) ?? null }))
+        .sort((a, b) => Number(b.favorite) - Number(a.favorite) || (b.validated_at ?? '').localeCompare(a.validated_at ?? ''))
     },
   })
 }

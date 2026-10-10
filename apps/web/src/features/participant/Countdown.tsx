@@ -3,8 +3,8 @@ import { useI18n } from '../../i18n'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-/** Décompte jusqu'à la fin des envois (`events.ends_at`). Ne s'affiche pas sans date de fin. */
-export default function Countdown({ endsAt }: { endsAt: string | null }) {
+/** Texte du décompte jusqu'à `endsAt` (format du prototype : « 2 h 05 min 09 s »). `null` sans date de fin. */
+export function useCountdown(endsAt: string | null): { text: string; ended: boolean } | null {
   const { t } = useI18n()
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
@@ -13,11 +13,10 @@ export default function Countdown({ endsAt }: { endsAt: string | null }) {
     return () => clearInterval(timer)
   }, [endsAt])
   if (!endsAt) return null
-
-  const left = new Date(endsAt).getTime() - now
-  if (left <= 0) return <p className="pill bad" role="status">{t('ended')}</p>
-  const s = Math.floor(left / 1000)
-  const text = `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`
-  // Pas de annonce à chaque seconde pour les lecteurs d'écran : le texte complet est dans aria-label.
-  return <p className="pill" aria-label={`${t('endsIn')} ${text}`}><span aria-hidden="true">⏱ {t('endsIn')} {text}</span></p>
+  const ms = new Date(endsAt).getTime() - now
+  if (ms <= 0) return { text: t('ended'), ended: true }
+  const h = Math.floor(ms / 3600e3)
+  const m = Math.floor((ms % 3600e3) / 60e3)
+  const s = Math.floor((ms % 60e3) / 1e3)
+  return { text: `${t('endsIn')} ${h ? `${h} h ${pad(m)} min ${pad(s)} s` : `${m} min ${pad(s)} s`}`, ended: false }
 }

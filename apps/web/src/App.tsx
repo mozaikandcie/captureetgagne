@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nProvider } from './i18n'
 import Layout from './features/accessibilite/Layout'
@@ -8,8 +8,6 @@ import HomePage from './features/participant/HomePage'
 import GalleryPage from './features/participant/GalleryPage'
 import MePage from './features/participant/MePage'
 import ChallengesPage from './features/defis/ChallengesPage'
-import MyContentPage from './features/envois/MyContentPage'
-import NotificationsPage from './features/notifications/NotificationsPage'
 import DataPage from './features/legal/DataPage'
 import RulesPage from './features/legal/RulesPage'
 
@@ -19,6 +17,12 @@ const WallPage = lazy(() => import('./features/mur/WallPage'))
 const CeremonyPage = lazy(() => import('./features/remise-prix/CeremonyPage'))
 
 const queryClient = new QueryClient()
+
+/** Anciennes adresses « contenus » et « notifications » : tout est maintenant dans « Moi ». */
+function ToMe() {
+  const { eventId } = useParams()
+  return <Navigate to={`/e/${eventId}/moi`} replace />
+}
 
 export default function App() {
   return (
@@ -33,8 +37,8 @@ export default function App() {
                   <Route path="defis" element={<ChallengesPage />} />
                   <Route path="galerie" element={<GalleryPage />} />
                   <Route path="moi" element={<MePage />} />
-                  <Route path="contenus" element={<MyContentPage />} />
-                  <Route path="notifications" element={<NotificationsPage />} />
+                  <Route path="contenus" element={<ToMe />} />
+                  <Route path="notifications" element={<ToMe />} />
                   <Route path="reglement" element={<RulesPage />} />
                 </Route>
                 <Route path="/jury/:eventId" element={<JuryPage />} />

@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Outlet, useMatch, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useMe } from '../../lib/me'
 import { useI18n } from '../../i18n'
 import Header from '../../components/Header'
+import Splash, { splashSeen } from '../../components/Splash'
 import JoinPage from '../inscription/JoinPage'
 import BottomNav from './BottomNav'
 import { progress, useChallenges, useMyEntries, useUnreadCount, type EventInfo, type ParticipantCtx } from './data'
@@ -14,19 +16,21 @@ export default function ParticipantArea() {
   const { t } = useI18n()
   const { session, me, loading } = useMe(eventId)
   const viewingRules = !!useMatch('/e/:eventId/reglement')
+  const [splashDone, setSplashDone] = useState(splashSeen)
 
   const event = useQuery({
     queryKey: ['event', eventId],
     queryFn: async (): Promise<EventInfo | null> => {
       const { data, error } = await supabase
-        .from('events').select('id, name, status, ends_at, message').eq('id', eventId!).maybeSingle()
+        .from('events').select('id, name, status, ends_at, message, date_label, place, prizes').eq('id', eventId!).maybeSingle()
       if (error) throw error
       return data
     },
     enabled: !!eventId,
   })
 
-  if (loading || event.isLoading) return <main className="page"><p role="status">{t('loading')}</p></main>
+  const splash = !splashDone ? <Splash onDone={() => setSplashDone(true)} /> : null
+  if (loading || event.isLoading) return <main className="page">{splash}<p role="status">{t('loading')}</p></main>
   // Une erreur de connexion (clé invalide, réseau) ne doit pas se faire passer pour un événement fermé.
   if (event.isError) {
     console.error('Lecture de l’événement impossible', event.error)
@@ -38,16 +42,17 @@ export default function ParticipantArea() {
   if (!session || !me) {
     return (
       <main className="page">
+        {splash}
         <Header />
         {viewingRules ? <Outlet /> : <JoinPage event={event.data} userId={session?.user.id} />}
       </main>
     )
   }
-  const ctx: ParticipantCtx = { event: event.data, me }
-  return <Shell ctx={ctx} />
+  const ctx: ParticipantCtx = { event: event.data, me, splashDone }
+  return <Shell ctx={ctx} splash={splash} />
 }
 
-function Shell({ ctx }: { ctx: ParticipantCtx }) {
+function Shell({ ctx, splash }: { ctx: ParticipantCtx; splash: React.ReactNode }) {
   const challenges = useChallenges(ctx.event.id)
   const entries = useMyEntries(ctx.me.id)
   const unread = useUnreadCount(ctx.me.id)
@@ -56,7 +61,8 @@ function Shell({ ctx }: { ctx: ParticipantCtx }) {
   return (
     <>
       <main className="page with-nav">
-        <Header subtitle={false} />
+        {splash}
+        <Header />
         <Outlet context={ctx} />
       </main>
       <BottomNav eventId={ctx.event.id} left={left} unread={unread.data ?? 0} />
