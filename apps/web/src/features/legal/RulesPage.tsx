@@ -1,7 +1,8 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { useI18n } from '../../i18n'
+import BackLink from '../../components/BackLink'
 
 /** Règlement du concours : texte de `events.rules`, en français (non traduit en V1). */
 export default function RulesPage() {
@@ -20,7 +21,7 @@ export default function RulesPage() {
     <section className="box">
       <h2>{t('rules')}</h2>
       {rules.data ? <div className="rules" lang="fr">{rules.data}</div> : <p>{t('rulesEmpty')}</p>}
-      <p><Link to={`/e/${eventId}`}>{t('back')}</Link></p>
+      <p><BackLink fallback={`/e/${eventId}`} /></p>
     </section>
   )
 }

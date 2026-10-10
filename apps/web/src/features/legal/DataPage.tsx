@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { useI18n } from '../../i18n'
+import BackLink from '../../components/BackLink'
 
 /** Page « Données personnelles » (RGPD). Durées de conservation : à confirmer par le bureau. */
 export default function DataPage() {
@@ -18,7 +18,7 @@ export default function DataPage() {
         <section key={title}><h2>{t(title)}</h2><p>{t(body)}</p></section>
       ))}
       <p>{t('dataHost')}</p>
-      <p><Link to="/">{t('back')}</Link></p>
+      <p><BackLink /></p>
     </main>
   )
 }
