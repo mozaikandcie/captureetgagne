@@ -6,6 +6,7 @@ import { useSession } from '../../lib/session'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
 import PhoneForm from '../inscription/PhoneForm'
+import Header from '../../components/Header'
 import { MediaView, useModerationData, type Challenge, type Row } from './data'
 import NotesTab from '../notation/NotesTab'
 import ToolsTab from '../outils/ToolsTab'
@@ -41,15 +42,16 @@ export default function JuryPage() {
     return <main className="page"><p role="status">{t('loading')}</p></main>
   }
   if (!session) {
-    return <main className="page"><h1>{t('juryLogin')}</h1><PhoneForm /></main>
+    return <main className="page"><Header subtitle={false} /><section className="box"><h2>{t('juryLogin')}</h2><PhoneForm /></section></main>
   }
   if (!staff.data) {
-    return <main className="page"><p role="alert">{t('juryOnly')}</p></main>
+    return <main className="page"><Header subtitle={false} /><p role="alert">{t('juryOnly')}</p></main>
   }
 
   return (
     <main className="page wide">
-      <h1>{t('juryTitle')} · {staff.data.label}</h1>
+      <Header subtitle={false} />
+      <h2>{t('juryTitle')} · {staff.data.label}</h2>
       <div role="tablist" className="tabs">
         {TABS.map(([id, label]) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id}

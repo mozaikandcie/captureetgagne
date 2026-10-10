@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
-import { localized, useMe } from '../../lib/me'
+import { localized } from '../../lib/me'
+import type { ParticipantCtx } from '../participant/data'
 import { useI18n } from '../../i18n'
 
 interface Payload {
@@ -18,9 +19,9 @@ interface Payload {
 
 /** Notifications du participant, affichées dans sa langue à partir de la clé + variables stockées. */
 export default function NotificationsPage() {
-  const { eventId } = useParams<{ eventId: string }>()
+  const { event, me } = useOutletContext<ParticipantCtx>()
+  const eventId = event.id
   const { t, lang } = useI18n()
-  const { me, loading } = useMe(eventId)
   const qc = useQueryClient()
 
   const challenges = useQuery({
@@ -62,9 +63,7 @@ export default function NotificationsPage() {
     await qc.invalidateQueries({ queryKey: ['notifications', me!.id] })
   }
 
-  if (loading || notifs.isLoading) return <main className="page"><p role="status">{t('loading')}</p></main>
-  // Pas connecté ou pas inscrit : retour à la page d'inscription, qui gère les deux cas.
-  if (!me) return <Navigate to={`/e/${eventId}`} replace />
+  if (notifs.isLoading) return <p role="status">{t('loading')}</p>
 
   const text = (p: Payload) => {
     const challenge = localized(challenges.data?.find((c) => c.id === p.challengeId)?.title, lang)
@@ -76,9 +75,9 @@ export default function NotificationsPage() {
   const hasUnread = notifs.data?.some((n) => !n.read_at)
 
   return (
-    <main className="page">
-      <h1>{t('myNotifs')}</h1>
-      <p><Link to={`/e/${eventId}/defis`}>{t('back')}</Link></p>
+    <section className="box">
+      <h2>{t('myNotifs')}</h2>
+      <p><Link to={`/e/${eventId}/moi`}>{t('back')}</Link></p>
       {hasUnread && <button type="button" className="link" onClick={() => void markAllRead()}>{t('readAll')}</button>}
       {notifs.data?.length === 0 && <p>{t('notifsEmpty')}</p>}
       <ul className="cards">
@@ -93,6 +92,6 @@ export default function NotificationsPage() {
           )
         })}
       </ul>
-    </main>
+    </section>
   )
 }

@@ -1,0 +1,28 @@
+/* Mur en direct */
+.wall { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-columns: 1fr minmax(220px, 24%); background: #140c0b; color: #fff; }
+.w-stage { position: relative; display: grid; place-items: center; overflow: hidden; }
+.w-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; animation: fadeIn 0.8s both; }
+.w-cap { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; padding: 16px 24px; font-size: 1.4rem; background: linear-gradient(transparent, rgba(0, 0, 0, 0.75)); }
+.w-fav { color: var(--yellow); }
+.w-empty { font-size: 1.6rem; padding: 24px; text-align: center; }
+.w-side { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px; text-align: center; background: #1f1412; }
+.w-side h1 { color: var(--yellow); font-size: 1.2rem; }
+.w-side .link { color: var(--yellow); }
+.w-qr { width: min(100%, 210px); padding: 10px; background: #fff; border-radius: 12px; }
+.qr { width: 100%; max-width: 320px; background: #fff; border: 2px solid var(--red); border-radius: 14px; }
+@media (max-width: 700px) { .wall { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } }
+
+/* Remise des prix */
+.cer { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-rows: 1fr auto; background: radial-gradient(circle at 50% 30%, #7d1715, #140c0b 70%); color: #fff; }
+.cer-confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.cer-in { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; min-height: 0; }
+.cer-lab { margin: 0; color: var(--yellow); font-size: 1.2rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.cer-big { margin: 0; font-size: clamp(2rem, 7vw, 4.5rem); font-weight: 800; animation: fadeIn 0.8s both; }
+.cer-sub { margin: 0; font-size: 1.3rem; opacity: 0.9; }
+.cer-drum { margin: 0; font-size: 8rem; font-weight: 800; color: var(--yellow); }
+.cer-media { max-width: min(90vw, 560px); max-height: 45vh; object-fit: contain; border-radius: 14px; animation: fadeIn 0.8s both; }
+.cer-nav { position: relative; display: flex; gap: 16px; justify-content: center; align-items: center; padding: 12px; }
+.cer-nav .btn { width: auto; min-width: 140px; margin: 0; padding: 0 16px; display: inline-grid; place-items: center; text-decoration: none; }
+.cer-nav .btn.ghost { color: #fff; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .w-media, .cer-big, .cer-media { animation: none; } }

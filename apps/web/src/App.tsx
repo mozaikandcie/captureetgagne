@@ -3,7 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nProvider } from './i18n'
 import Layout from './features/accessibilite/Layout'
-import JoinPage from './features/inscription/JoinPage'
+import ParticipantArea from './features/participant/ParticipantArea'
+import HomePage from './features/participant/HomePage'
+import GalleryPage from './features/participant/GalleryPage'
+import MePage from './features/participant/MePage'
 import ChallengesPage from './features/defis/ChallengesPage'
 import MyContentPage from './features/envois/MyContentPage'
 import NotificationsPage from './features/notifications/NotificationsPage'
@@ -25,11 +28,15 @@ export default function App() {
           <Suspense fallback={<main className="page"><p role="status">…</p></main>}>
             <Routes>
               <Route element={<Layout />}>
-                <Route path="/e/:eventId" element={<JoinPage />} />
-                <Route path="/e/:eventId/defis" element={<ChallengesPage />} />
-                <Route path="/e/:eventId/contenus" element={<MyContentPage />} />
-                <Route path="/e/:eventId/notifications" element={<NotificationsPage />} />
-                <Route path="/e/:eventId/reglement" element={<RulesPage />} />
+                <Route path="/e/:eventId" element={<ParticipantArea />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="defis" element={<ChallengesPage />} />
+                  <Route path="galerie" element={<GalleryPage />} />
+                  <Route path="moi" element={<MePage />} />
+                  <Route path="contenus" element={<MyContentPage />} />
+                  <Route path="notifications" element={<NotificationsPage />} />
+                  <Route path="reglement" element={<RulesPage />} />
+                </Route>
                 <Route path="/jury/:eventId" element={<JuryPage />} />
                 <Route path="/donnees-personnelles" element={<DataPage />} />
                 <Route path="*" element={<main className="page"><h1>Capture et Gagne</h1></main>} />

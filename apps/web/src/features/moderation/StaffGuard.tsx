@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase'
 import { useSession } from '../../lib/session'
 import { useI18n } from '../../i18n'
 import PhoneForm from '../inscription/PhoneForm'
+import Header from '../../components/Header'
 
 /** Réserve un écran au jury et à l'organisation de l'événement. */
 export default function StaffGuard({ eventId, children }: {
@@ -25,7 +26,7 @@ export default function StaffGuard({ eventId, children }: {
   if (session === undefined || (session && staff.isLoading)) {
     return <main className="page"><p role="status">{t('loading')}</p></main>
   }
-  if (!session) return <main className="page"><h1>{t('juryLogin')}</h1><PhoneForm /></main>
-  if (!staff.data) return <main className="page"><p role="alert">{t('juryOnly')}</p></main>
+  if (!session) return <main className="page"><Header subtitle={false} /><section className="box"><h2>{t('juryLogin')}</h2><PhoneForm /></section></main>
+  if (!staff.data) return <main className="page"><Header subtitle={false} /><p role="alert">{t('juryOnly')}</p></main>
   return <>{children(staff.data)}</>
 }

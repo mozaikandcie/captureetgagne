@@ -39,7 +39,7 @@ export default function PhoneForm() {
   }
 
   return step === 'phone' ? (
-    <form onSubmit={sendCode} noValidate>
+    <form onSubmit={sendCode} noValidate className="stack">
       <label className="f">
         <span>{t('phone')}</span>
         <input type="tel" inputMode="tel" autoComplete="tel" value={raw}
@@ -50,7 +50,7 @@ export default function PhoneForm() {
       <button type="submit" className="btn" disabled={busy}>{t('sendCode')}</button>
     </form>
   ) : (
-    <form onSubmit={verify} noValidate>
+    <form onSubmit={verify} noValidate className="stack">
       <p role="status">{t('codeSent', { phone })}</p>
       <label className="f">
         <span>{t('codeLabel')}</span>

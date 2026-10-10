@@ -15,12 +15,12 @@ export default function RulesPage() {
       return data?.rules ?? null
     },
   })
-  if (rules.isLoading) return <main className="page"><p role="status">{t('loading')}</p></main>
+  if (rules.isLoading) return <p role="status">{t('loading')}</p>
   return (
-    <main className="page">
-      <h1>{t('rules')}</h1>
+    <section className="box">
+      <h2>{t('rules')}</h2>
       {rules.data ? <div className="rules" lang="fr">{rules.data}</div> : <p>{t('rulesEmpty')}</p>}
-      <p><Link to={`/e/${eventId}/defis`}>{t('back')}</Link></p>
-    </main>
+      <p><Link to={`/e/${eventId}`}>{t('back')}</Link></p>
+    </section>
   )
 }

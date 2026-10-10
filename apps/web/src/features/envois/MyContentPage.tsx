@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
-import { localized, useMe } from '../../lib/me'
+import { localized } from '../../lib/me'
+import type { ParticipantCtx } from '../participant/data'
 import { useI18n } from '../../i18n'
 
 const STATUS_KEY = { pending: 'stPending', ok: 'stOk', rejected: 'stRejected' } as const
 
 /** « Mes contenus » : envois, statut, motif de refus, et retrait (suppression de la ligne ET du fichier). */
 export default function MyContentPage() {
-  const { eventId } = useParams<{ eventId: string }>()
+  const { event, me } = useOutletContext<ParticipantCtx>()
   const { t, lang } = useI18n()
-  const { me, loading } = useMe(eventId)
   const qc = useQueryClient()
   const [error, setError] = useState<string | null>(null)
 
@@ -42,15 +42,13 @@ export default function MyContentPage() {
     await qc.invalidateQueries({ queryKey: ['my-entries'] })
   }
 
-  if (loading || entries.isLoading) return <main className="page"><p role="status">{t('loading')}</p></main>
-  // Pas connecté ou pas inscrit : retour à la page d'inscription, qui gère les deux cas.
-  if (!me) return <Navigate to={`/e/${eventId}`} replace />
+  if (entries.isLoading) return <p role="status">{t('loading')}</p>
 
   return (
-    <main className="page">
-      <h1>{t('mine')}</h1>
+    <section className="box">
+      <h2>{t('mine')}</h2>
       <p className="help">{t('mineNote')}</p>
-      <p><Link to={`/e/${eventId}/defis`}>{t('back')}</Link></p>
+      <p><Link to={`/e/${event.id}/moi`}>{t('back')}</Link></p>
       {error && <p role="alert" className="err">{error}</p>}
       {entries.data?.length === 0 && <p>{t('noEntries')}</p>}
       <ul className="cards">
@@ -71,6 +69,6 @@ export default function MyContentPage() {
           )
         })}
       </ul>
-    </main>
+    </section>
   )
 }
