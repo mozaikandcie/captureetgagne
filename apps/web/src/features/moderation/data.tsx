@@ -30,7 +30,7 @@ export function useModerationData(eventId: string) {
     queryFn: async (): Promise<Row[]> => {
       const { data, error } = await supabase
         .from('entries')
-        .select('id, challenge_id, kind, status, favorite, created_at, reject_reason, storage_path, participants(display_name)')
+        .select('id, challenge_id, kind, status, favorite, created_at, reject_reason, storage_path, participants!entries_participant_id_fkey(display_name)')
         .eq('event_id', eventId)
         .order('created_at')
       if (error) throw error

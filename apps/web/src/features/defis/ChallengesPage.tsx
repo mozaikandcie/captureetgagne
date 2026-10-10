@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
+import { posterUrl } from '../jury/posters'
 import UploadButton from '../envois/UploadButton'
 import { useQueue } from '../envois/useQueue'
 import { discard, retry } from '../envois/queue'
@@ -58,10 +59,11 @@ export default function ChallengesPage() {
                 <div className="body">
                   <h3>{localized(c.title as Json, lang)}</h3>
                   <p>{localized(c.hint as Json, lang)} · {typeLabel[c.kind as keyof typeof typeLabel]}</p>
-                  {(tip || culture) && (
+                  {(tip || culture || c.example_path) && (
                     <details className="tip">
                       <summary>💡 {culture ? t('tipsCult') : t('tips')}</summary>
                       <div className="tbody">
+                        {c.example_path && <figure className="example"><img src={posterUrl(c.example_path) ?? ''} alt="" /><figcaption>{t('example')}</figcaption></figure>}
                         {tip && <p>{tip}</p>}
                         {culture && <p className="cult">{culture}</p>}
                       </div>

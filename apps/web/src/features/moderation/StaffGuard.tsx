@@ -9,7 +9,7 @@ import Header from '../../components/Header'
 /** Réserve un écran au jury et à l'organisation de l'événement. */
 export default function StaffGuard({ eventId, children }: {
   eventId: string
-  children: (staff: { role: string; label: string }) => ReactNode
+  children: (staff: { role: string; label: string; userId: string }) => ReactNode
 }) {
   const { t } = useI18n()
   const session = useSession()
@@ -28,5 +28,5 @@ export default function StaffGuard({ eventId, children }: {
   }
   if (!session) return <main className="page"><Header subtitle={false} /><section className="box"><h2>{t('juryLogin')}</h2><PhoneForm /></section></main>
   if (!staff.data) return <main className="page"><Header subtitle={false} /><p role="alert">{t('juryOnly')}</p></main>
-  return <>{children(staff.data)}</>
+  return <>{children({ ...staff.data, userId: session.user.id })}</>
 }

@@ -3,7 +3,7 @@
 Web app de concours photo et vidéo de l'association **Ambyans Twopikal** (Lormont).
 Les participants relèvent des défis pendant un événement, un jury de l'association modère et note, l'app calcule le classement et projette les résultats.
 
-**Périmètre validé : V1 uniquement.** La V2 (Prix du public et votes, badges, SMS aux gagnants, PWA installable, historique des événements, défis multilingues) est mise en attente jusqu'après le développement et le test réel. Ne pas la coder en V1 ; la section « V2 en attente » en fin de fichier la résume.
+**Périmètre (mis à jour le 2026-10-10).** La V1 est codée. À la demande du développeur, une partie de la V2 est maintenant codée aussi : Prix du public et votes, badges, historique des événements, défis multilingues (saisie des traductions par l'organisation). **Reste en attente** : SMS aux gagnants (dépend de Brevo, repoussé) et PWA installable. La section « V2 » en fin de fichier indique l'état.
 
 Ce fichier sert de point de départ au dépôt de code. Il peut être placé à la racine du projet sous le nom `CLAUDE.md` (ou `README.md`) pour qu'un développeur, ou un assistant de code, ait tout le contexte.
 
@@ -232,11 +232,7 @@ BREVO_SMS_SENDER=AMBYANS
 - Durées de conservation définitives.
 - Relecteurs des 5 créoles.
 
-## 11. V2 en attente (ne pas coder avant la fin du test réel)
+## 11. V2 : état
 
-- **Prix du public** : table `votes` (3 par participant, jamais pour soi, trigger), colonne `events.public_vote`, règle de départage à définir (le prototype n'en a pas), RLS : votes insert/delete pour le participant, lecture pour le jury.
-- **Badges** : 7 badges et notification `badge`.
-- **SMS aux gagnants** : fonction `notify-winners`. En V1, annonce sur place.
-- **PWA installable** : `vite-plugin-pwa`, icône, plein écran, hors ligne partiel.
-- **Historique des événements** : archives avec gagnants et galeries.
-- **Défis multilingues** : traduction du nom et de la consigne par le jury.
+- **Fait** : Prix du public (table `votes`, 3 votes par participant, jamais pour soi, trigger ; `events.public_vote` ; RLS ; fonctions `vote_counts` et `public_prize`, départage : le plus de votes puis le contenu validé en premier, à confirmer par le bureau) ; badges (7, table `participant_badges`, notification `badge`, calculés par `refresh_badges`) ; historique (`archive_event`, `create_next_event`, `event_summary`) ; défis multilingues (titre et consigne par langue dans « Gérer les défis ») ; affiche de l'événement et photos d'exemple (bucket public `posters`).
+- **En attente** : SMS aux gagnants (`notify-winners`, avec Brevo) ; PWA installable (`vite-plugin-pwa`, icône, plein écran, hors ligne partiel).

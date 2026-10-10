@@ -11,6 +11,7 @@ export interface EventInfo {
   place: string | null
   prizes: string | null
   public_vote: boolean
+  poster_path: string | null
 }
 
 export interface ParticipantCtx {
@@ -26,7 +27,7 @@ export function useChallenges(eventId: string) {
     queryKey: ['challenges', eventId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('challenges').select('id, position, title, hint, tip, culture, kind').eq('event_id', eventId).order('position')
+        .from('challenges').select('id, position, title, hint, tip, culture, kind, example_path').eq('event_id', eventId).order('position')
       if (error) throw error
       return data
     },

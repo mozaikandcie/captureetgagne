@@ -28,7 +28,7 @@ supabase link --project-ref jylepdgarlmoolwjvthh
 supabase db push        # applique supabase/migrations/ dans l'ordre
 ```
 
-Les 4 migrations : schéma + RLS + `standings` + bucket `media` ; notifications de modération ; notation et rangs ; purge RGPD.
+Les migrations (`supabase/migrations/`, appliquées dans l'ordre) : schéma + RLS + `standings` + bucket `media` ; notifications de modération ; notation et rangs ; purge RGPD ; V2 (votes, badges, archives, affiches) et ses correctifs ; aides du jury. La CLI connectée à ton compte peut les appliquer sans mot de passe : `npx supabase db push`.
 
 Ensuite les données d'exemple (**développement et test seulement**) : colle `supabase/seed.sql` dans Dashboard > SQL Editor > Run.
 
