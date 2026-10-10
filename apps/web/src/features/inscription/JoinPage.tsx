@@ -45,6 +45,11 @@ export default function JoinPage() {
   if (session === undefined || event.isLoading || (session && me.isLoading)) {
     return <main className="page"><p role="status">{t('loading')}</p></main>
   }
+  // Une erreur de connexion (clé invalide, réseau) ne doit pas se faire passer pour un événement fermé.
+  if (event.isError) {
+    console.error('Lecture de l’événement impossible', event.error)
+    return <main className="page"><p role="alert" className="err">{t('netError')}</p></main>
+  }
   if (!event.data || event.data.status !== 'live') {
     return <main className="page"><p role="alert">{t('eventNotFound')}</p></main>
   }
