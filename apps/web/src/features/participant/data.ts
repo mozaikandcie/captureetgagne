@@ -10,6 +10,7 @@ export interface EventInfo {
   date_label: string | null
   place: string | null
   prizes: string | null
+  public_vote: boolean
 }
 
 export interface ParticipantCtx {
@@ -119,4 +120,43 @@ export function progress(entries: { challenge_id: string; status: string }[]) {
   const sent = new Set(entries.filter((e) => e.status !== 'rejected').map((e) => e.challenge_id))
   const ok = new Set(entries.filter((e) => e.status === 'ok').map((e) => e.challenge_id))
   return { sent, ok }
+}
+
+/** Nombre de votes du public par envoi (le détail des votes reste privé). */
+export function useVoteCounts(eventId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ['vote-counts', eventId],
+    enabled,
+    refetchInterval: 20000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('vote_counts', { p_event: eventId })
+      if (error) throw error
+      return new Map<string, number>((data ?? []).map((r: { entry_id: string; votes: number }) => [r.entry_id, r.votes]))
+    },
+  })
+}
+
+/** Envois pour lesquels ce participant a voté. */
+export function useMyVotes(participantId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ['my-votes', participantId],
+    enabled,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('votes').select('entry_id').eq('participant_id', participantId)
+      if (error) throw error
+      return new Set((data ?? []).map((v) => v.entry_id as string))
+    },
+  })
+}
+
+/** Badges obtenus par ce participant. */
+export function useMyBadges(participantId: string) {
+  return useQuery({
+    queryKey: ['my-badges', participantId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('participant_badges').select('badge').eq('participant_id', participantId)
+      if (error) throw error
+      return new Set((data ?? []).map((b) => b.badge as string))
+    },
+  })
 }

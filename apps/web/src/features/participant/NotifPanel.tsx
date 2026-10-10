@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
+import { badgeById } from './badges'
 import { useChallenges } from './data'
 
 interface Payload {
@@ -14,9 +15,10 @@ interface Payload {
   total?: number
   score?: number
   provisional?: boolean
+  badge?: string
 }
 
-const ICON: Record<string, string> = { defi: '✅', refus: '📷', com: '💬', rang: '📈' }
+const ICON: Record<string, string> = { defi: '✅', refus: '📷', com: '💬', rang: '📈', badge: '🏅' }
 
 /** Liste des notifications du participant, dans sa langue (titre + texte, comme le prototype). */
 export default function NotifPanel({ eventId, participantId }: { eventId: string; participantId: string }) {
@@ -61,6 +63,10 @@ export default function NotifPanel({ eventId, participantId }: { eventId: string
     if (p.key === 'nDefi') return { title: t('nDefiT', { challenge: c }), body: t('nDefiB') }
     if (p.key === 'nRefus') return { title: t('nRefusT', { challenge: c }), body: [t('nRefusB'), p.reason ? t('nReason', { reason: p.reason }) : ''].filter(Boolean).join(' ') }
     if (p.key === 'nCom') return { title: t('nComT', { challenge: c }), body: t('nComText', { comment: p.comment ?? '' }) }
+    if (p.key === 'nBadge') {
+      const b = badgeById(p.badge ?? '')
+      return { title: t('nBadgeT', { name: b ? t(b.name) : '' }), body: t('nBadgeB', { desc: b ? t(b.desc) : '' }) }
+    }
     const rank = p.rank ?? 0
     const enc = rank === 1 ? 'enc1' : rank <= 3 ? 'enc2' : 'enc3'
     return {
@@ -82,7 +88,7 @@ export default function NotifPanel({ eventId, participantId }: { eventId: string
           const { title, body } = lines(n.payload as Payload)
           return (
             <li key={n.id} className={n.read_at ? '' : 'new'}>
-              <span className="ic" aria-hidden="true">{ICON[n.kind] ?? '🔔'}</span>
+              <span className="ic" aria-hidden="true">{n.kind === 'badge' ? (badgeById((n.payload as Payload).badge ?? '')?.icon ?? '🏅') : ICON[n.kind] ?? '🔔'}</span>
               <div>
                 {!n.read_at && <span className="sr">{t('unread')} </span>}
                 <b>{title}</b><span>{body}</span>

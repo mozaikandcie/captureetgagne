@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { useI18n } from '../../i18n'
 import Onboarding from '../inscription/Onboarding'
+import BadgesBox from './BadgesBox'
 import MineBox from './MineBox'
 import MyBox from './MyBox'
 import RulesBox from './RulesBox'
@@ -15,6 +16,7 @@ export default function MePage() {
   return (
     <>
       <MyBox ctx={ctx} />
+      <BadgesBox participantId={ctx.me.id} />
       <MineBox ctx={ctx} />
       <RulesBox eventId={ctx.event.id} />
       <p className="orglink">

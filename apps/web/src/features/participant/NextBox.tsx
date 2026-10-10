@@ -38,7 +38,11 @@ export default function NextBox({ ctx }: { ctx: ParticipantCtx }) {
   if (!list.length) return null
   return (
     <section className="box nextbox">
-      <div><span className="lab">{t('bravo')}</span><h2>{t('allDone')}</h2><p>{t('juryLooks')}</p></div>
+      <div>
+        <span className="lab">{t('bravo')}</span><h2>{t('allDone')}</h2>
+        <p>{ctx.event.public_vote ? t('voteNow') : t('juryLooks')}</p>
+      </div>
+      {ctx.event.public_vote && <Link className="btn" to={`${base}/galerie`}>{t('vote')}</Link>}
     </section>
   )
 }

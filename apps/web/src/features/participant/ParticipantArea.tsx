@@ -22,7 +22,7 @@ export default function ParticipantArea() {
     queryKey: ['event', eventId],
     queryFn: async (): Promise<EventInfo | null> => {
       const { data, error } = await supabase
-        .from('events').select('id, name, status, ends_at, message, date_label, place, prizes').eq('id', eventId!).maybeSingle()
+        .from('events').select('id, name, status, ends_at, message, date_label, place, prizes, public_vote').eq('id', eventId!).maybeSingle()
       if (error) throw error
       return data
     },

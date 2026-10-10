@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../../lib/supabase'
 import { localized } from '../../lib/me'
 import { useI18n } from '../../i18n'
-import { useChallenges, useMyEntries, type ParticipantCtx } from './data'
+import { useChallenges, useMyEntries, useVoteCounts, type ParticipantCtx } from './data'
 
 const STATUS = { pending: ['stPending', 'wait'], ok: ['stOk', 'ok'], rejected: ['stRejected', 'bad'] } as const
 
@@ -13,6 +13,7 @@ export default function MineBox({ ctx }: { ctx: ParticipantCtx }) {
   const qc = useQueryClient()
   const entries = useMyEntries(ctx.me.id)
   const challenges = useChallenges(ctx.event.id)
+  const counts = useVoteCounts(ctx.event.id, ctx.event.public_vote)
   const [ask, setAsk] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -52,6 +53,7 @@ export default function MineBox({ ctx }: { ctx: ParticipantCtx }) {
                 </div>
                 <span className="help">
                   {e.note !== null ? t('juryNoteLine', { n: e.note.toFixed(1).replace('.', ',') }) : e.status === 'ok' ? t('notScored') : ''}
+                  {ctx.event.public_vote && e.status === 'ok' ? ` · ${t('publicVotes', { n: counts.data?.get(e.id) ?? 0 })}` : ''}
                 </span>
                 {e.status === 'rejected' && e.reject_reason && <div className="com err">{e.reject_reason}</div>}
                 {e.comments.map((c, i) => <div key={i} className="com"><b>{t('juryNote')}</b>{c}</div>)}
