@@ -10,14 +10,11 @@ export default function JoinPage({ event, userId }: { event: EventInfo; userId?:
   const { t } = useI18n()
   if (event.status !== 'live') return <p role="alert">{t('eventNotFound')}</p>
   return (
-    <>
-      <span className="event-pill">{event.name}</span>
-      <section className="box">
-        <h2>{t('joinTitle')}</h2>
-        <p className="help">{t('joinIntro')}</p>
-        {userId ? <ProfileForm eventId={event.id} userId={userId} /> : <PhoneForm />}
-      </section>
-    </>
+    <section className="box">
+      <h2>{t('joinTitle')}</h2>
+      <p className="help">{t('joinIntro')}</p>
+      {userId ? <ProfileForm eventId={event.id} userId={userId} /> : <PhoneForm />}
+    </section>
   )
 }
 

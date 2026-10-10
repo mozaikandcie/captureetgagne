@@ -6,7 +6,7 @@ import { useMe } from '../../lib/me'
 import { useI18n } from '../../i18n'
 import Header from '../../components/Header'
 import Splash, { splashSeen } from '../../components/Splash'
-import JoinPage from '../inscription/JoinPage'
+import Landing from './Landing'
 import BottomNav from './BottomNav'
 import { progress, useChallenges, useMyEntries, useUnreadCount, type EventInfo, type ParticipantCtx } from './data'
 
@@ -44,7 +44,7 @@ export default function ParticipantArea() {
       <main className="page">
         {splash}
         <Header />
-        {viewingRules ? <Outlet /> : <JoinPage event={event.data} userId={session?.user.id} />}
+        {viewingRules ? <Outlet /> : <Landing event={event.data} userId={session?.user.id} splashDone={splashDone} />}
       </main>
     )
   }
