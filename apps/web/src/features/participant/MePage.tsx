@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useOutletContext } from 'react-router-dom'
 import { useI18n } from '../../i18n'
+import InstallBox from '../../components/InstallBox'
 import Onboarding from '../inscription/Onboarding'
 import BadgesBox from './BadgesBox'
 import MineBox from './MineBox'
@@ -18,6 +19,7 @@ export default function MePage() {
       <MyBox ctx={ctx} />
       <BadgesBox participantId={ctx.me.id} />
       <MineBox ctx={ctx} />
+      <InstallBox />
       <RulesBox eventId={ctx.event.id} />
       <p className="orglink">
         <button type="button" className="link" onClick={() => setIntro(true)}>{t('obAgain')}</button>

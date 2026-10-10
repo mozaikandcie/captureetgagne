@@ -30,7 +30,7 @@ export default function ParticipantArea() {
   })
 
   const splash = !splashDone ? <Splash onDone={() => setSplashDone(true)} /> : null
-  if (loading || event.isLoading) return <main className="page">{splash}<p role="status">{t('loading')}</p></main>
+  if (loading || event.isLoading) return <main className="page">{splash}<Header subtitle={false} /><p role="status">{t('loading')}</p></main>
   // Une erreur de connexion (clé invalide, réseau) ne doit pas se faire passer pour un événement fermé.
   if (event.isError) {
     console.error('Lecture de l’événement impossible', event.error)

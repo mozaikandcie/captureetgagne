@@ -198,3 +198,12 @@ Ne planifie la purge qu'après avoir lu le résultat de l'essai à blanc. Elle e
 Une fois ces comptes connectés une fois (sur `/jury/<id>` pour le jury), rattache-les à `staff` avec la requête de l'étape 6 : `where phone = '33600000001'`.
 
 **Avant le vrai événement** : vide le champ « Test Phone Numbers and OTPs » et supprime les comptes de test (Authentication > Users). Sinon n'importe qui connaissant un de ces numéros et le code `123456` entrerait avec ce compte, jury compris.
+
+---
+
+## Annexe · Installer l'application sur un téléphone (PWA)
+
+- **Android (Chrome)** : ouvrir l'adresse de l'app, aller dans l'onglet « Moi » et toucher « Installer », ou utiliser le menu du navigateur (« Installer l'application »).
+- **iPhone (Safari)** : toucher le bouton Partager, puis « Sur l'écran d'accueil ». L'invite automatique n'existe pas sur iOS.
+- L'installation exige **HTTPS** : elle marche sur l'adresse Vercel, pas sur `http://192.168…` en réseau local.
+- Une nouvelle version publiée remplace l'ancienne à l'ouverture suivante. Si un doute subsiste sur la version affichée, fermer complètement l'app puis la rouvrir.

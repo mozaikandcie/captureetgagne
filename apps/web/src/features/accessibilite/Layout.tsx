@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useI18n } from '../../i18n'
+import OfflineBanner from '../../components/OfflineBanner'
 import { applyScale, applyTheme, loadScale, loadTheme } from './prefs'
 
 /** Cadre commun : réglages mémorisés appliqués dès l'ouverture, lien d'évitement, pied de page légal. */
@@ -15,6 +16,7 @@ export default function Layout() {
 
   return (
     <>
+      <OfflineBanner />
       <a className="skip" href="#main">{t('skipToContent')}</a>
       <div id="main" tabIndex={-1}><Outlet /></div>
       <footer className="foot">

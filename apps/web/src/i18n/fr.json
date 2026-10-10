@@ -445,5 +445,10 @@
   "wallTitle": "Mur photo en direct",
   "yesDelete": "Oui, supprimer",
   "you": "Vous",
-  "youAre": "Vous êtes"
+  "youAre": "Vous êtes",
+  "installTitle": "Installer l’application",
+  "installHelp": "Ajoutez Capture et Gagne à l’écran d’accueil de votre téléphone : elle s’ouvre en plein écran, comme une application.",
+  "installBtn": "Installer",
+  "installIos": "Sur iPhone : touchez le bouton Partager de Safari, puis « Sur l’écran d’accueil ».",
+  "offlineBanner": "Pas de réseau. Vos envois en attente partiront dès que la connexion reviendra."
 }

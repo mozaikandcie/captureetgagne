@@ -3,7 +3,7 @@
 Web app de concours photo et vidéo de l'association **Ambyans Twopikal** (Lormont).
 Les participants relèvent des défis pendant un événement, un jury de l'association modère et note, l'app calcule le classement et projette les résultats.
 
-**Périmètre (mis à jour le 2026-10-10).** La V1 est codée. À la demande du développeur, une partie de la V2 est maintenant codée aussi : Prix du public et votes, badges, historique des événements, défis multilingues (saisie des traductions par l'organisation). **Reste en attente** : SMS aux gagnants (dépend de Brevo, repoussé) et PWA installable. La section « V2 » en fin de fichier indique l'état.
+**Périmètre (mis à jour le 2026-10-10).** La V1 est codée. À la demande du développeur, une partie de la V2 est maintenant codée aussi : Prix du public et votes, badges, historique des événements, défis multilingues (saisie des traductions par l'organisation). **PWA installable** : faite (manifeste, service worker, bouton « Installer », bandeau hors connexion). **Reste en attente** : SMS aux gagnants (dépend de Brevo, repoussé). La section « V2 » en fin de fichier indique l'état.
 
 Ce fichier sert de point de départ au dépôt de code. Il peut être placé à la racine du projet sous le nom `CLAUDE.md` (ou `README.md`) pour qu'un développeur, ou un assistant de code, ait tout le contexte.
 
@@ -235,4 +235,5 @@ BREVO_SMS_SENDER=AMBYANS
 ## 11. V2 : état
 
 - **Fait** : Prix du public (table `votes`, 3 votes par participant, jamais pour soi, trigger ; `events.public_vote` ; RLS ; fonctions `vote_counts` et `public_prize`, départage : le plus de votes puis le contenu validé en premier, à confirmer par le bureau) ; badges (7, table `participant_badges`, notification `badge`, calculés par `refresh_badges`) ; historique (`archive_event`, `create_next_event`, `event_summary`) ; défis multilingues (titre et consigne par langue dans « Gérer les défis ») ; affiche de l'événement et photos d'exemple (bucket public `posters`).
-- **En attente** : SMS aux gagnants (`notify-winners`, avec Brevo) ; PWA installable (`vite-plugin-pwa`, icône, plein écran, hors ligne partiel).
+- **PWA** : `vite-plugin-pwa` (mise à jour automatique), icônes générées depuis le logo, plein écran. Hors ligne partiel : seule la coquille de l'app est gardée ; **aucune requête Supabase n'est mise en cache** ; la file d'envois (IndexedDB + TUS) continue de fonctionner.
+- **En attente** : SMS aux gagnants (`notify-winners`, avec Brevo).
