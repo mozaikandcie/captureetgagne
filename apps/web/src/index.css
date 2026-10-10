@@ -392,3 +392,12 @@ section > img, section > video { width: 100%; max-height: 70vh; object-fit: cont
 .notice { padding: 10px 12px; font-size: 0.9rem; background: color-mix(in srgb, var(--yellow) 30%, transparent); border-radius: 10px; }
 .notice p { margin: 4px 0 0; }
 input[aria-invalid='true'] { border-color: var(--bad); }
+
+/* ---------- Bandeau des envois ---------- */
+.tray { position: fixed; left: 8px; right: 8px; z-index: 19; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); max-width: 544px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; padding: 10px 14px; font-size: 0.9rem; color: var(--fg); background: var(--surface); border: 2px solid var(--line); border-radius: 14px; box-shadow: 0 6px 24px rgba(42, 23, 20, 0.18); }
+.tray.failed { border-color: var(--bad); }
+.tray.uploading { border-color: var(--yellow); }
+.tray.waiting { border-color: var(--warn); }
+.tray.idle { border-color: var(--ok); }
+
+.tray.stalled { border-color: var(--warn); }

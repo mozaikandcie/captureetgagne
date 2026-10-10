@@ -90,7 +90,7 @@ export default function ChallengesPage() {
                       ) : (
                         <>
                           <progress value={q.progress} max={1} aria-label={t('uploading')} />
-                          {q.status === 'uploading' ? t('uploading') : t('queued')}
+                          {q.status === 'uploading' ? `${t('uploading')} ${Math.round(q.progress * 100)} %` : t('queued')}
                         </>
                       )}
                     </div>

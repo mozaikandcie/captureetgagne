@@ -497,5 +497,18 @@
   "smsResendIn": "Renvoyer le code dans {n} s",
   "smsResent": "Nouveau code envoyé.",
   "smsHelpTitle": "Le code n’arrive pas ?",
-  "smsHelp": "Vérifiez le numéro, patientez une minute puis renvoyez le code. Si cela ne marche toujours pas, demandez à un membre de l’association : il vous aidera sur place."
+  "smsHelp": "Vérifiez le numéro, patientez une minute puis renvoyez le code. Si cela ne marche toujours pas, demandez à un membre de l’association : il vous aidera sur place.",
+  "trayFailed": "{n} envois ont échoué",
+  "trayFailed_one": "{n} envoi a échoué",
+  "trayFailedHelp": "Rien n’est perdu : le fichier est gardé sur ce téléphone.",
+  "trayRetry": "Réessayer",
+  "trayDetails": "Voir",
+  "trayUploading": "Envoi en cours : {n} fichiers · {p} %",
+  "trayUploading_one": "Envoi en cours : {n} fichier · {p} %",
+  "trayWaiting": "{n} fichiers en attente de réseau",
+  "trayWaiting_one": "{n} fichier en attente de réseau",
+  "trayKept": "Ils sont gardés sur ce téléphone et partiront dès que possible, même si vous fermez l’application.",
+  "traySent": "Envoyé. Votre contenu attend la validation du jury.",
+  "trayStalled": "Connexion instable.",
+  "trayStalledHelp": "L’envoi reprend tout seul dès que le réseau le permet. Rien n’est perdu."
 }

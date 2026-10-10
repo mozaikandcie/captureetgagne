@@ -18,6 +18,7 @@ export interface QueueItem {
   progress: number // 0..1
   error?: string // clé de traduction
   detail?: string // détail technique (statut HTTP, message), pour comprendre un échec
+  stalled?: boolean // en cours, mais plus aucun octet n'avance depuis un moment (réseau instable)
 }
 
 const DB_NAME = 'cg-queue'
@@ -87,6 +88,7 @@ function describe(e: unknown): string {
 }
 
 // ---- envoi ----
+const STALL_MS = 10_000
 let running = false
 let retryTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -103,6 +105,11 @@ async function uploadBlob(item: QueueItem): Promise<void> {
   const { data } = await supabase.auth.getSession()
   if (!data.session) throw new Error('authRequired')
   return new Promise((resolve, reject) => {
+    // Réseau instable : tant que la bibliothèque réessaie, rien n'avance. Au bout de 10 s sans progrès, on le dit.
+    let lastProgress = Date.now()
+    const watchdog = setInterval(() => {
+      if (Date.now() - lastProgress > STALL_MS) update(item.id, { stalled: true })
+    }, 3000)
     const upload = new tus.Upload(item.blob, {
       endpoint: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
       retryDelays: [0, 3000, 5000, 10000, 20000],
@@ -122,9 +129,9 @@ async function uploadBlob(item: QueueItem): Promise<void> {
         req.setHeader('Authorization', `Bearer ${data.session?.access_token ?? ''}`)
         req.setHeader('apikey', import.meta.env.VITE_SUPABASE_ANON_KEY)
       },
-      onProgress: (sent, total) => update(item.id, { progress: sent / total }),
-      onError: reject,
-      onSuccess: () => resolve(),
+      onProgress: (sent, total) => { lastProgress = Date.now(); update(item.id, { progress: sent / total, stalled: false }) },
+      onError: (err) => { clearInterval(watchdog); reject(err) },
+      onSuccess: () => { clearInterval(watchdog); resolve() },
     })
     void upload.findPreviousUploads().then((prev) => {
       if (prev.length) upload.resumeFromPreviousUpload(prev[0])
@@ -134,7 +141,7 @@ async function uploadBlob(item: QueueItem): Promise<void> {
 }
 
 async function process(item: QueueItem): Promise<void> {
-  update(item.id, { status: 'uploading', error: undefined, progress: 0 })
+  update(item.id, { status: 'uploading', error: undefined, progress: 0, stalled: false })
   try {
     await uploadBlob(item)
     const { error } = await supabase.from('entries').insert({
@@ -158,13 +165,13 @@ async function process(item: QueueItem): Promise<void> {
   } catch (e) {
     if (isNetworkError(e)) {
       // Pas de réseau : on reste dans la file, visible « en attente de réseau », et on réessaie seul.
-      update(item.id, { status: 'queued', error: undefined, detail: undefined, progress: 0 })
+      update(item.id, { status: 'queued', error: undefined, detail: undefined, progress: 0, stalled: false })
       scheduleRetry()
       return
     }
     console.error('Envoi échoué', e)
     const key = e instanceof Error && ['limitReached', 'closed', 'authRequired'].includes(e.message) ? e.message : 'uploadFailed'
-    update(item.id, { status: 'error', error: key, detail: describe(e) })
+    update(item.id, { status: 'error', error: key, detail: describe(e), stalled: false })
   }
 }
 
@@ -199,6 +206,12 @@ export async function enqueue(item: Omit<QueueItem, 'status' | 'progress'>): Pro
 
 export function retry(id: string): void {
   update(id, { status: 'queued', error: undefined })
+  void run()
+}
+
+/** Relance tous les envois en échec. */
+export function retryAll(): void {
+  for (const i of items.filter((x) => x.status === 'error')) update(i.id, { status: 'queued', error: undefined, detail: undefined })
   void run()
 }
 
