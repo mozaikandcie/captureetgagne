@@ -20,6 +20,13 @@ describe('normalizePhone', () => {
     expect(normalizePhone('+590 690 12 34 56')).toBe('+590690123456')
     expect(normalizePhone('0033612345678')).toBe('+33612345678')
   })
+  it('refuse les téléphones fixes et les numéros spéciaux (ils ne reçoivent pas de SMS)', () => {
+    for (const n of ['01 23 45 67 89', '04 91 00 00 00', '05 56 00 00 00', '09 72 00 00 00', '08 05 00 00 00']) expect(normalizePhone(n), n).toBeNull()
+  })
+  it('accepte les mobiles 06 et 07', () => {
+    expect(normalizePhone('07 00 00 00 01')).toBe('+33700000001')
+    expect(normalizePhone('06 00 00 00 01')).toBe('+33600000001')
+  })
   it('refuse les numéros invalides', () => {
     expect(normalizePhone('')).toBeNull()
     expect(normalizePhone('12345')).toBeNull()
