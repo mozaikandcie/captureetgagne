@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LANGS, useI18n, type Lang } from '../../i18n'
+import { useDialog } from '../../components/useDialog'
 
 const STEPS = [
   { emoji: '📸', key: 'ob1' },
@@ -21,7 +22,6 @@ export function hasSeenOnboarding(): boolean {
 export default function Onboarding({ onClose }: { onClose: () => void }) {
   const { t, lang, setLang } = useI18n()
   const [i, setI] = useState(0)
-  const nextRef = useRef<HTMLButtonElement>(null)
   const last = i === STEPS.length - 1
   const step = STEPS[i]
 
@@ -34,12 +34,11 @@ export default function Onboarding({ onClose }: { onClose: () => void }) {
     onClose()
   }
 
-  useEffect(() => nextRef.current?.focus(), [i])
+  const dialog = useDialog<HTMLDivElement>(close)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
-      else if (e.key === 'ArrowRight' && i < STEPS.length - 1) setI(i + 1)
+      if (e.key === 'ArrowRight' && i < STEPS.length - 1) setI(i + 1)
       else if (e.key === 'ArrowLeft' && i > 0) setI(i - 1)
     }
     document.addEventListener('keydown', onKey)
@@ -47,8 +46,8 @@ export default function Onboarding({ onClose }: { onClose: () => void }) {
   })
 
   return (
-    <div className="ob" role="dialog" aria-modal="true" aria-labelledby="obTitle" onClick={(e) => e.target === e.currentTarget && close()}>
-      <div className="ob-card">
+    <div className="ob" onClick={(e) => e.target === e.currentTarget && close()}>
+      <div className="ob-card" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="obTitle" tabIndex={-1}>
         <div className="ob-art">
           <label className="ob-lang">
             <span aria-hidden="true">🌐</span>
@@ -70,7 +69,7 @@ export default function Onboarding({ onClose }: { onClose: () => void }) {
             {STEPS.map((_, n) => <i key={n} className={n === i ? 'on' : ''} />)}
           </div>
           {!last && <button type="button" className="btn ghost small" onClick={close}>{t('skip')}</button>}
-          <button ref={nextRef} type="button" className="btn small" onClick={() => (last ? close() : setI(i + 1))}>
+          <button type="button" className="btn small" data-autofocus onClick={() => (last ? close() : setI(i + 1))}>
             {last ? t('letsgo') : t('next')}
           </button>
         </div>

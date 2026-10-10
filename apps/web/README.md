@@ -25,6 +25,7 @@ Ils utilisent le projet Supabase de `apps/web/.env` et les **numéros de test** 
 ### Ce qui est couvert
 
 - **Règles d'accès (25 contrôles)** : un visiteur ne lit aucune donnée personnelle ; un participant ne voit pas les envois en attente d'un autre, ne peut ni modérer, ni noter, ni modifier l'événement, ni déposer dans le dossier d'un autre, ni voter pour lui-même ; un juré modère et note mais ne lit pas les notes des autres et ne modifie ni événement ni défis ; l'organisation gère l'événement mais ne note pas ; les badges et les votes restent privés ; le droit à l'effacement.
+- **Accessibilité** : la présentation en 3 étapes et l'agrandissement de l'affiche se parcourent au clavier (le focus reste dans la fenêtre, Échap ferme, le focus retourne au bouton d'origine) ; le décompte et le lot sont lisibles.
 - **Parcours** : inscription (numéro invalide, code SMS, consentements) ; envoi d'une photo ; validation et notation par les jurés ; classement définitif chez l'organisateur ; le participant voit sa note, le commentaire du jury et son badge.
 
 Ces tests ne tournent pas dans la CI GitHub (ils ont besoin du projet Supabase) : à lancer avant chaque mise en production.

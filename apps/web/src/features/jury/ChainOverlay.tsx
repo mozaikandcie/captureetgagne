@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { localized } from '../../lib/me'
+import { useDialog } from '../../components/useDialog'
 import { useI18n } from '../../i18n'
 import { MediaView } from '../moderation/data'
 import { pendingQueue } from '../moderation/entries'
@@ -22,6 +23,7 @@ export default function ChainOverlay({ jury, userId, mode: initial, onClose, toa
   const [note, setNote] = useState<NoteForm>(emptyNote)
   const [busy, setBusy] = useState(false)
   const card = useRef<HTMLDivElement>(null)
+  const dialog = useDialog<HTMLDivElement>(onClose)
 
   const all = mode === 'mod' ? pendingQueue(jury.entries) : toScore(jury.entries, new Set(jury.myScores.keys()))
   const remaining = all.filter((e) => !skipped.has(e.id))
@@ -49,7 +51,6 @@ export default function ChainOverlay({ jury, userId, mode: initial, onClose, toa
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') return onClose()
       if ((e.target as HTMLElement).tagName === 'TEXTAREA' || (e.target as HTMLElement).tagName === 'INPUT') {
         if (!(mode === 'score' && e.key === 'Enter' && (e.target as HTMLElement).tagName === 'INPUT')) return
       }
@@ -93,7 +94,7 @@ export default function ChainOverlay({ jury, userId, mode: initial, onClose, toa
   const time = current ? new Date(current.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''
 
   return (
-    <div className="mq" role="dialog" aria-modal="true" aria-label={mode === 'mod' ? t('chainMod') : t('chainScore')}>
+    <div className="mq" ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-label={mode === 'mod' ? t('chainMod') : t('chainScore')}>
       <div className="mq-top">
         <b>{mode === 'mod' ? t('chainMod') : t('chainScore')}</b>
         <span className="pill">{t('chainLeft', { n: all.length })}</span>

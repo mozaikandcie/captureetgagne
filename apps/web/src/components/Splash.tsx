@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '../i18n'
+import { useDialog } from './useDialog'
 
 const KEY = 'cg-splash'
 
@@ -32,6 +33,8 @@ export default function Splash({ onDone }: { onDone: () => void }) {
     setTimeout(finish, 400)
   }
 
+  const dialog = useDialog<HTMLDivElement>(close)
+
   // Se ferme seul après l'animation (3,4 s + 0,6 s de sortie).
   useEffect(() => {
     const timer = setTimeout(finish, 4000)
@@ -39,7 +42,7 @@ export default function Splash({ onDone }: { onDone: () => void }) {
   })
 
   return (
-    <div className={leaving ? 'splash gone' : 'splash'} role="dialog" aria-label="Capture et Gagne, Ambyans Twopikal" onClick={close}>
+    <div ref={dialog} tabIndex={-1} className={leaving ? 'splash gone' : 'splash'} role="dialog" aria-modal="true" aria-label="Capture et Gagne, Ambyans Twopikal" onClick={close}>
       <div className="sp-flash" aria-hidden="true" />
       <div className="sp-center">
         <div className="sp-lens"><img src="/logo.png" alt="" /></div>
@@ -48,7 +51,7 @@ export default function Splash({ onDone }: { onDone: () => void }) {
         </p>
         <p className="sp-asso"><span>{t('spPresented')}</span>Ambyans Twopikal</p>
       </div>
-      <button type="button" className="sp-skip" onClick={(e) => { e.stopPropagation(); close() }}>{t('enter')}</button>
+      <button type="button" className="sp-skip" data-autofocus onClick={(e) => { e.stopPropagation(); close() }}>{t('enter')}</button>
     </div>
   )
 }

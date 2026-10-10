@@ -99,7 +99,7 @@ export default function EventForm({ eventId, toast }: { eventId: string; toast: 
         </div>
         <span className="help">{t('fPosterHelp')}</span>
       </div>
-      <label className="f"><span>{t('fEventPrize')}</span><input type="text" value={form.prizes ?? ''} onChange={(e) => set('prizes', e.target.value)} /></label>
+      <label className="f"><span>{t('fEventPrize')}</span><input type="text" value={form.prizes ?? ''} placeholder={t('fEventPrizeEx')} onChange={(e) => set('prizes', e.target.value)} /></label>
       <label className="f"><span>{t('fEventStatus')}</span>
         <select value={form.status} onChange={(e) => set('status', e.target.value)}>
           <option value="draft">{t('statusDraft')}</option>

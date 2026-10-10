@@ -510,5 +510,6 @@
   "trayKept": "Ils sont gardés sur ce téléphone et partiront dès que possible, même si vous fermez l’application.",
   "traySent": "Envoyé. Votre contenu attend la validation du jury.",
   "trayStalled": "Connexion instable.",
-  "trayStalledHelp": "L’envoi reprend tout seul dès que le réseau le permet. Rien n’est perdu."
+  "trayStalledHelp": "L’envoi reprend tout seul dès que le réseau le permet. Rien n’est perdu.",
+  "fEventPrizeEx": "ex. 50 € ou 1er prix : 2 places de concert"
 }
