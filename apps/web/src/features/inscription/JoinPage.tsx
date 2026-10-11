@@ -15,6 +15,7 @@ export default function JoinPage({ event, userId }: { event: EventInfo; userId?:
     <section className="box">
       <h2>{t('joinTitle')}</h2>
       <p className="help">{t('joinIntro')}</p>
+      {!userId && <p className="help">{t('joinBack')}</p>}
       {userId ? <ProfileForm eventId={event.id} userId={userId} /> : <PhoneForm />}
     </section>
   )
