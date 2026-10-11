@@ -16,8 +16,8 @@ export async function buildQrPoster(opts: { qrDataUrl: string; name: string; sub
     x.drawImage(logo, W / 2 - 100, 360 - 116, 200, (200 * logo.height) / logo.width)
   } catch { /* logo indisponible : l'affichette reste lisible */ }
   x.textAlign = 'center'
-  x.fillStyle = '#fff'; x.font = '800 96px "Bricolage Grotesque Variable", sans-serif'; x.fillText('Capture et Gagne', W / 2, 170)
-  x.font = '500 40px "Figtree Variable", sans-serif'; x.fillText('Le concours photo et vidéo d’Ambyans Twopikal', W / 2, 240)
+  x.fillStyle = '#fff'; x.font = '800 96px "Bricolage Grotesque Variable", sans-serif'; x.fillText('Capture et Gagne', W / 2, 135)
+  x.font = '500 40px "Figtree Variable", sans-serif'; x.fillText('Le concours photo et vidéo d’Ambyans Twopikal', W / 2, 196)
   x.fillStyle = '#2a1714'; x.font = '800 64px "Bricolage Grotesque Variable", sans-serif'; x.fillText(opts.name, W / 2, 640, W - 120)
   x.font = '500 38px "Figtree Variable", sans-serif'; x.fillStyle = '#7a625a'; x.fillText(opts.subtitle, W / 2, 705, W - 120)
   const qr = await load(opts.qrDataUrl)
