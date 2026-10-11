@@ -6,6 +6,8 @@ import { useI18n } from '../../i18n'
 import { eventLink, isLocalAddress } from '../../lib/publicUrl'
 import { buildQrPoster } from './poster'
 import { useQr } from './useQr'
+import SmsStatus from './SmsStatus'
+import WinnersSms from '../remise-prix/WinnersSms'
 
 interface Archived { id: string; name: string; date: string; participants: number; contents: number; winner: string | null; score: number | null; publicWinner: string | null; thumbs: string[] }
 
@@ -136,6 +138,20 @@ export default function ToolsTab({ eventId, isOrganizer, toast }: { eventId: str
           <h2>{t('cerTitle')}</h2>
           <p className="help">{t('cerNote')}</p>
           <div className="row"><Link className="btn small" to={`/organisation/${eventId}/remise`}>{t('launchCeremony')}</Link></div>
+        </div>
+      )}
+
+      {isOrganizer && (
+        <div className="box">
+          <h2>{t('winSmsTitle')}</h2>
+          <WinnersSms eventId={eventId} toast={toast} />
+        </div>
+      )}
+
+      {isOrganizer && (
+        <div className="box">
+          <h2>{t('smsCreditsTitle')}</h2>
+          <SmsStatus />
         </div>
       )}
 
