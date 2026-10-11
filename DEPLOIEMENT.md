@@ -215,3 +215,11 @@ Une fois ces comptes connectés une fois (sur `/jury/<id>` pour le jury), rattac
 - **iPhone (Safari)** : toucher le bouton Partager, puis « Sur l'écran d'accueil ». L'invite automatique n'existe pas sur iOS.
 - L'installation exige **HTTPS** : elle marche sur l'adresse Vercel, pas sur `http://192.168…` en réseau local.
 - Une nouvelle version publiée remplace l'ancienne à l'ouverture suivante. Si un doute subsiste sur la version affichée, fermer complètement l'app puis la rouvrir.
+
+## Annexe · SMS, gagnants et purge (mise en service du 11 octobre 2026)
+
+- **SMS de connexion** : fonction `send-sms` + hook Auth « Send SMS ». Secrets : `BREVO_API_KEY` (clé API v3, `xkeysib-…`), `BREVO_SMS_SENDER`, `SEND_SMS_HOOK_SECRET` (valeur `v1,whsec_…` générée dans le hook). Brevo : crédits SMS achetés et **restriction d'adresses IP désactivée** (les Edge Functions n'ont pas d'adresse fixe). Limite d'envois par heure à relever (300).
+- **SMS aux gagnants** : fonction `notify-winners` (organisateurs seulement), table `winner_sms`. L'interface est dans l'espace organisation, onglet Outils : aperçu des messages, puis envoi.
+- **Solde de crédits** : fonction `sms-status`, affichée dans l'onglet Outils.
+- **Purge RGPD** : fonction `purge` (secret `CRON_SECRET`), déclenchée chaque nuit à 3 h par `pg_cron` (tâche `purge-rgpd`, secret dans le coffre de la base sous `purge_cron_secret`). Essai à blanc : `…/functions/v1/purge?dry=1` avec l'en-tête `x-cron-secret`. Durées : coordonnées 3 mois, médias 24 mois, après la fin des envois de l'événement.
+- **Plan B** : voir `PLAN-B.md`.

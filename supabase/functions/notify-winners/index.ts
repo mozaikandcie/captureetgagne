@@ -58,8 +58,8 @@ Deno.serve(async (req) => {
   for (const a of awards) {
     const person = people.data!.find((p) => p.id === a.participantId)
     if (!person) continue
-    const { data: user } = await admin.auth.admin.getUserById(person.user_id as string)
-    const phone = user.user?.phone ?? null
+    // Coordonnées purgées (RGPD) : plus de compte, donc plus de numéro.
+    const phone = person.user_id ? (await admin.auth.admin.getUserById(person.user_id as string)).data.user?.phone ?? null : null
     rows.push({
       participantId: a.participantId, name: person.display_name as string, rank: a.rank,
       phone, phoneMasked: phone ? maskPhone(phone) : null,
