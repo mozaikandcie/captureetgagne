@@ -94,6 +94,7 @@
   "changeNumber": "Changer de numéro",
   "badPhone": "Numéro invalide. Exemple : 06 12 34 56 78",
   "netError": "Problème de connexion. Réessaie dans un instant.",
+  "noOpenEvent": "Aucun événement n’est ouvert pour le moment. Scannez le QR code de l’événement ou ouvrez le lien reçu des organisateurs.",
   "eventNotFound": "Cet événement n’est pas ouvert aux inscriptions.",
   "loading": "Chargement…",
   "consentRequired": "Les deux cases sont nécessaires pour participer.",

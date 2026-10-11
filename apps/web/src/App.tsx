@@ -8,6 +8,7 @@ import HomePage from './features/participant/HomePage'
 import GalleryPage from './features/participant/GalleryPage'
 import MePage from './features/participant/MePage'
 import ChallengesPage from './features/defis/ChallengesPage'
+import RootRedirect from './features/inscription/RootRedirect'
 import DataPage from './features/legal/DataPage'
 import RulesPage from './features/legal/RulesPage'
 
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/jury/:eventId" element={<JurySpace />} />
                 <Route path="/organisation/:eventId" element={<OrgSpace />} />
                 <Route path="/donnees-personnelles" element={<DataPage />} />
+                <Route path="/" element={<RootRedirect />} />
                 <Route path="*" element={<main className="page"><h1>Capture et Gagne</h1></main>} />
               </Route>
               {/* Écrans projetés : plein écran, sans cadre ni pied de page */}
