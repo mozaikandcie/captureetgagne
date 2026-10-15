@@ -1,11 +1,12 @@
-import { LANGS, useI18n, type Lang } from '../i18n'
+import { useI18n } from '../i18n'
+import LangPicker from './LangPicker'
 import { usePrefs } from '../features/accessibilite/usePrefs'
 
 const THEME_LABEL = { auto: 'themeAuto', light: 'themeLight', dark: 'themeDark' } as const
 
 /** En-tête : logo, titre, langue, taille du texte (« A+ ») et thème. */
 export default function Header({ subtitle = true }: { subtitle?: boolean }) {
-  const { t, lang, setLang } = useI18n()
+  const { t } = useI18n()
   const { scale, theme, cycleScale, cycleTheme } = usePrefs()
   // Affichage réel : le thème « auto » suit le réglage du téléphone.
   const dark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches)
@@ -19,10 +20,7 @@ export default function Header({ subtitle = true }: { subtitle?: boolean }) {
         </div>
       </div>
       <div className="hd-tools">
-        <label className="sr" htmlFor="lang">{t('langLabel')}</label>
-        <select id="lang" className="langsel" value={lang} onChange={(e) => setLang(e.target.value as Lang)}>
-          {LANGS.map(([code, label]) => <option key={code} value={code}>🌐 {label}</option>)}
-        </select>
+        <LangPicker />
         <button type="button" className="chipbtn" onClick={cycleScale}
           aria-label={t('textSize', { n: Math.round(scale * 100) })}>{t('textSizeBtn')}</button>
         <button type="button" className="chipbtn" onClick={cycleTheme}

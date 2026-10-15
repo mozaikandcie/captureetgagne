@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { LANGS, useI18n, type Lang } from '../../i18n'
+import { useI18n } from '../../i18n'
+import LangPicker from '../../components/LangPicker'
 import { useDialog } from '../../components/useDialog'
 
 const STEPS = [
@@ -20,7 +21,7 @@ export function hasSeenOnboarding(): boolean {
 
 /** Trois écrans de bienvenue (prototype : ob1 à ob3), avec choix de la langue. Ferme avec « Passer », Échap ou le dernier bouton. */
 export default function Onboarding({ onClose }: { onClose: () => void }) {
-  const { t, lang, setLang } = useI18n()
+  const { t } = useI18n()
   const [i, setI] = useState(0)
   const last = i === STEPS.length - 1
   const step = STEPS[i]
@@ -49,13 +50,7 @@ export default function Onboarding({ onClose }: { onClose: () => void }) {
     <div className="ob" onClick={(e) => e.target === e.currentTarget && close()}>
       <div className="ob-card" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="obTitle" tabIndex={-1}>
         <div className="ob-art">
-          <label className="ob-lang">
-            <span aria-hidden="true">🌐</span>
-            <span className="sr">{t('langLabel')}</span>
-            <select value={lang} onChange={(e) => setLang(e.target.value as Lang)}>
-              {LANGS.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
-            </select>
-          </label>
+          <LangPicker className="ob-lang" floating />
           <span className="ring" aria-hidden="true" />
           <span className="emo" key={i} aria-hidden="true">{step.emoji}</span>
         </div>
