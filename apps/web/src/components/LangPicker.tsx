@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { LANGS, useI18n, type Lang } from '../i18n'
 
-/** Drapeau de chaque langue. Une langue sans fichier (La Réunion, en attente) s'affiche avec le globe. */
+/** Drapeau de chaque langue. Une langue sans fichier s'affiche avec le globe. */
 const FLAGS: Partial<Record<Lang, string>> = {
   fr: '/flags/fr.svg',
   gp: '/flags/gp.png',
   mq: '/flags/mq.png',
   gf: '/flags/gf.png',
+  re: '/flags/re.png',
   ht: '/flags/ht.png',
 }
 
